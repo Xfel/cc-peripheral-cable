@@ -1,0 +1,11 @@
+--- Minecraft/.project
++++ Minecraft/.project
+@@ -26,1 +26,1 @@ 
+-            <locationURI>MCP_LOC/src/minecraft</locationURI>
++            <locationURI>MCP_LOC/src_work/minecraft</locationURI>
+@@ -31,1 +31,1 @@ 
+-            <locationURI>MCP_LOC/src/common</locationURI>
++            <locationURI>MCP_LOC/src_work/common</locationURI>
+@@ -71,1 +71,1 @@ 
+-            <value>$%7BPARENT-1-WORKSPACE_LOC%7D</value>
++            <value>$%7BPARENT-1-WORKSPACE_LOC%7D/mcp</value>

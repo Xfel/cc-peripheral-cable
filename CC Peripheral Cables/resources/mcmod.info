@@ -1,0 +1,19 @@
+[
+{
+  "modid": "CCCable",
+  "name": "ComputerCraft Peripheral Cables",
+  "description": "Extends ComputerCraft with cables to connect remote peripherals.",
+  "version": "",
+  "credits": "Created by Xfel, is an addon for ComputerCraft",
+  "logoFile": "",
+  "mcversion": "",
+  "url": "http://www.computercraft.info/forums2/index.php?/topic/738-cc-13314-mc-125-smp-xfels-peripherals/",
+  "updateUrl": "",
+  "authors": [ "Xfel" ],
+  "parent":"ComputerCraft",
+  "screenshots": [],
+  "requiredMods": [
+     "ComputerCraft"
+  ]
+}
+]

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cccable" basedir=".">
+
+	
+	<!-- environment properties -->
+	<property name="mcp.dir" location="${workspace.dir}/../mcp" />
+	<property name="mcp.source.dir" location="${mcp.dir}/src/minecraft" />
+	<property name="mcp.reobf.dir" location="${mcp.dir}/reobf/minecraft" />
+
+	<property name="build.dir" location="${workspace.dir}/../build" />
+	<property name="dist.dir" location="${workspace.dir}/../dist" />
+
+	<property name="source.dir" location="src" />
+	<property name="resources.dir" location="resources" />
+
+	<!-- mod properties -->
+	<property name="mod.id" value="${ant.project.name}" />
+	<property name="mod.version" value="1.1.0" />
+	<property name="mod.api.files" value="xfel/mods/cccable/api/**" />
+
+	<target name="clean">
+		<delete dir="${build.dir}/${mod.id}" />
+	</target>
+
+	<target name="compile" depends="clean">
+
+        <echo>Compiling ${ant.project.name}</echo>
+		<!-- publish files to copy -->
+		<echo>Collecting java files...</echo>
+		<copy todir="${mcp.source.dir}">
+			<fileset dir="${source.dir}" excludes="**/.git" />
+			<filterset>
+				<filter token="mod.version" value="${mod.version}" />
+			</filterset>
+		</copy>
+
+        <echo>Executing mcp routines</echo>
+		<!-- Recompile -->
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
+			<arg line="/c recompile.bat" />
+		</exec>
+
+		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
+			<arg value="recompile.sh" />
+		</exec>
+
+		<!-- Reobf -->
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
+			<arg line="/c reobfuscate.bat" />
+		</exec>
+
+		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
+			<arg value="reobfuscate.sh" />
+		</exec>
+
+        <echo>Merging resourcs</echo>
+		<!-- Copy classes -->
+		<copy todir="${build.dir}/${mod.id}">
+			<fileset dir="${mcp.reobf.dir}" />
+		</copy>
+
+		<!-- Copy resources -->
+		<copy todir="${build.dir}/${mod.id}">
+			<fileset dir="${resources.dir}" excludes="**/.git" />
+		</copy>
+
+	</target>
+
+	<target name="package" depends="compile">
+		<zip destfile="${dist.dir}/${mod.id}-${mod.version}-universal.zip" basedir="${build.dir}/${mod.id}" />
+	</target>
+
+	<target name="api">
+		<zip destfile="${dist.dir}/${mod.id}-${mod.version}-api.zip" basedir="${source.dir}" includes="${mod.api.files}" excludes="**/.git" />
+	</target>
+
+</project>
