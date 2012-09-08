@@ -7,6 +7,7 @@
  */package xfel.mods.cccable.common;
 
 import xfel.mods.cccable.common.blocks.BlockPeripheralCable;
+import xfel.mods.cccable.common.blocks.TilePeripheralCableServer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Block;
 import cpw.mods.fml.common.Mod.Init;
@@ -14,6 +15,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "CCCable", version = "@mod.version@", useMetadata = false, name = "ComputerCraft Peripheral Cables")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -32,6 +34,8 @@ public class PeripheralCableMod {
 	public void init(FMLInitializationEvent evt){
 		
 		sideHandler.initSide();
+		
+		GameRegistry.registerTileEntity(TilePeripheralCableServer.class, "PeripheralCable");
 		
 	}
 }

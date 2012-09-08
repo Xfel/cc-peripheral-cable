@@ -64,6 +64,7 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 	 */
 	protected void cleanup() {
 		doDetachPeripheral();
+		localPeripheral = null;
 
 		connectionStateDirty = true;
 	}
@@ -186,6 +187,10 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 		}
 	}
 
+	/*
+	 * routing table listener hooks
+	 */
+
 	@Override
 	public void peripheralAdded(RoutingTable routingTable,
 			IPeripheral peripheral, int colorTag) {
@@ -223,6 +228,10 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 					computer, computerSide);
 		}
 	}
+
+	/*
+	 * IPeriperalCable interface implementation
+	 */
 
 	@Override
 	public synchronized Map<Integer, IPeripheral> getPeripheralMap() {
@@ -291,6 +300,10 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 		return null;
 	}
 
+	/*
+	 * IPeriperal implementation
+	 */
+
 	@Override
 	public String getType() {
 		return "cable";
@@ -342,9 +355,9 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 					|| (!(arguments[1] instanceof String))) {
 				throw new Exception("string expected");
 			}
-			
-			return att.call((String) arguments[1], Arrays.copyOfRange(arguments, 2,
-					arguments.length - 1));
+
+			return att.call((String) arguments[1],
+					Arrays.copyOfRange(arguments, 2, arguments.length - 1));
 		}
 		assert false;
 		return null;

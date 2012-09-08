@@ -7,9 +7,13 @@
  */package xfel.mods.cccable.common.blocks;
 
 import net.minecraft.src.BlockContainer;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
+import net.minecraftforge.common.ForgeDirection;
 
 public class BlockPeripheralCable extends BlockContainer {
 
@@ -68,5 +72,36 @@ public class BlockPeripheralCable extends BlockContainer {
 			tpc.cleanup();
 		}
 		super.breakBlock(world, x, y, z, blockId, blockmeta);
+	}
+	
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int direction, float offsetX, float offsetY, float offsetZ) {
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+
+		if (te instanceof TilePeripheralCableCommon) {
+			TilePeripheralCableCommon tpc = (TilePeripheralCableCommon) te;
+			
+			ItemStack iih=player.getCurrentEquippedItem();
+			
+			if(iih.getItem()==Item.dyePowder){
+				tpc.setColorTag(iih.getItemDamage());
+				if (!player.capabilities.isCreativeMode) {
+					iih.stackSize--;
+					if (iih.stackSize == 0) {
+						player.destroyCurrentEquippedItem();
+					}
+				}
+				return true;
+			}
+			
+			if(iih.getItem()==Item.bucketWater){
+				tpc.setColorTag(-1);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isConnected(int connectionState, ForgeDirection dir) {
+		return  (connectionState&dir.flag)!=0;
 	}
 }
