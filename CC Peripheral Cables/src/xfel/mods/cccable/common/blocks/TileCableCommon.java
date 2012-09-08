@@ -14,7 +14,7 @@ import net.minecraft.src.Packet132TileEntityData;
 import net.minecraft.src.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TilePeripheralCableCommon extends TileEntity {
+public class TileCableCommon extends TileEntity {
 
 	protected int colorTag;
 

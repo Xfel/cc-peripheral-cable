@@ -26,7 +26,7 @@ import xfel.mods.cccable.common.routing.IRoutingTableListener;
 import xfel.mods.cccable.common.routing.RoutingTable;
 import xfel.mods.cccable.common.routing.RoutingTableEntry;
 
-public class TilePeripheralCableServer extends TilePeripheralCableCommon
+public class TileCableServer extends TileCableCommon
 		implements IRoutingTableListener, IPeripheralCable, IPeripheral {
 
 	public static final ForgeDirection[] DIRS = { ForgeDirection.DOWN,
@@ -37,15 +37,15 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 
 	private RoutingTable routingTable;
 
-	private Map<ForgeDirection, TilePeripheralCableServer> adjacentCables;
+	private Map<ForgeDirection, TileCableServer> adjacentCables;
 
 	private IPeripheral localPeripheral;
 
 	private Map<IComputerAccess, String> localComputers;
 
-	public TilePeripheralCableServer() {
+	public TileCableServer() {
 		routingTable = new RoutingTable();
-		adjacentCables = new EnumMap<ForgeDirection, TilePeripheralCableServer>(
+		adjacentCables = new EnumMap<ForgeDirection, TileCableServer>(
 				ForgeDirection.class);
 		localComputers = new HashMap<IComputerAccess, String>();
 	}
@@ -94,8 +94,8 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 				continue;
 			}
 			ForgeDirection peripheralSide = ForgeDirection.UNKNOWN;
-			if (te instanceof TilePeripheralCableServer) {
-				TilePeripheralCableServer cable = (TilePeripheralCableServer) te;
+			if (te instanceof TileCableServer) {
+				TileCableServer cable = (TileCableServer) te;
 
 				if (this.colorTag == -1 || cable.colorTag == -1
 						|| this.colorTag == cable.colorTag) {
@@ -135,7 +135,7 @@ public class TilePeripheralCableServer extends TilePeripheralCableCommon
 	 * Updates the routing table
 	 */
 	protected void updateRoutingTable() {
-		for (Map.Entry<ForgeDirection, TilePeripheralCableServer> entry : adjacentCables
+		for (Map.Entry<ForgeDirection, TileCableServer> entry : adjacentCables
 				.entrySet()) {
 			routingTable.recieveUpdate(entry.getValue().routingTable,
 					entry.getKey());

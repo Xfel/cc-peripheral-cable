@@ -15,11 +15,11 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public class BlockPeripheralCable extends BlockContainer {
+public class BlockCable extends BlockContainer {
 
 	private int renderType = -1;
 
-	protected BlockPeripheralCable(int id) {
+	protected BlockCable(int id) {
 		super(id, Material.glass);
 		setBlockName("cable.peripheral");
 		setTextureFile("terrain/ccable.png");
@@ -28,9 +28,9 @@ public class BlockPeripheralCable extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		if (world.isRemote) {
-			return new TilePeripheralCableCommon();
+			return new TileCableCommon();
 		}
-		return new TilePeripheralCableServer();
+		return new TileCableServer();
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class BlockPeripheralCable extends BlockContainer {
 			int blockId) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te instanceof TilePeripheralCableServer) {
-			TilePeripheralCableServer tpc = (TilePeripheralCableServer) te;
+		if (te instanceof TileCableServer) {
+			TileCableServer tpc = (TileCableServer) te;
 			tpc.connectionStateDirty = true;
 		}
 	}
@@ -67,8 +67,8 @@ public class BlockPeripheralCable extends BlockContainer {
 	public void breakBlock(World world, int x, int y, int z, int blockId, int blockmeta) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te instanceof TilePeripheralCableServer) {
-			TilePeripheralCableServer tpc = (TilePeripheralCableServer) te;
+		if (te instanceof TileCableServer) {
+			TileCableServer tpc = (TileCableServer) te;
 			tpc.cleanup();
 		}
 		super.breakBlock(world, x, y, z, blockId, blockmeta);
@@ -77,8 +77,8 @@ public class BlockPeripheralCable extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int direction, float offsetX, float offsetY, float offsetZ) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te instanceof TilePeripheralCableCommon) {
-			TilePeripheralCableCommon tpc = (TilePeripheralCableCommon) te;
+		if (te instanceof TileCableCommon) {
+			TileCableCommon tpc = (TileCableCommon) te;
 			
 			ItemStack iih=player.getCurrentEquippedItem();
 			

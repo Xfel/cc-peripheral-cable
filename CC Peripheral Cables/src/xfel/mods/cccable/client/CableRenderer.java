@@ -1,10 +1,13 @@
 package xfel.mods.cccable.client;
 
-import xfel.mods.cccable.common.blocks.BlockPeripheralCable;
-import xfel.mods.cccable.common.blocks.TilePeripheralCableCommon;
+import org.lwjgl.opengl.GL11;
+
+import xfel.mods.cccable.common.blocks.BlockCable;
+import xfel.mods.cccable.common.blocks.TileCableCommon;
 import net.minecraft.src.Block;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.RenderBlocks;
+import net.minecraft.src.Tessellator;
 import net.minecraft.src.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -23,8 +26,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 				maxSize);
 		renderblocks.renderStandardBlock(block, x, y, z);
 
-		if (BlockPeripheralCable.isConnected(connectionState,
-				ForgeDirection.WEST)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.WEST)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.WEST);
 			block.setBlockBounds(0.0F, minSize, minSize, minSize, maxSize,
@@ -32,8 +34,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockPeripheralCable.isConnected(connectionState,
-				ForgeDirection.EAST)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.EAST)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.EAST);
 			block.setBlockBounds(maxSize, minSize, minSize, 1.0F, maxSize,
@@ -41,8 +42,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockPeripheralCable.isConnected(connectionState,
-				ForgeDirection.DOWN)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.DOWN)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.DOWN);
 			block.setBlockBounds(minSize, 0.0F, minSize, maxSize, minSize,
@@ -50,8 +50,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockPeripheralCable
-				.isConnected(connectionState, ForgeDirection.UP)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.UP)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.UP);
 			block.setBlockBounds(minSize, maxSize, minSize, maxSize, 1.0F,
@@ -59,8 +58,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockPeripheralCable.isConnected(connectionState,
-				ForgeDirection.NORTH)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.NORTH)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.NORTH);
 			block.setBlockBounds(minSize, minSize, 0.0F, maxSize, maxSize,
@@ -68,8 +66,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockPeripheralCable.isConnected(connectionState,
-				ForgeDirection.SOUTH)) {
+		if (BlockCable.isConnected(connectionState, ForgeDirection.SOUTH)) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.SOUTH);
 			block.setBlockBounds(minSize, minSize, maxSize, maxSize, maxSize,
@@ -81,8 +78,40 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID,
 			RenderBlocks renderer) {
-		// TODO Auto-generated method stub
+		// GL11.glBindTexture(GL11.GL_TEXTURE_2D, 10);
+		Tessellator tessellator = Tessellator.instance;
 
+		int textureID = 0;
+
+		block.setBlockBounds(0.25f, 0.0F, 0.25f, 0.75f, 1.0F, 0.75f);
+		
+		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, -1F, 0.0F);
+		renderer.renderBottomFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 1.0F, 0.0F);
+		renderer.renderTopFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 0.0F, -1F);
+		renderer.renderEastFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, 0.0F, 1.0F);
+		renderer.renderWestFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(-1F, 0.0F, 0.0F);
+		renderer.renderNorthFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(1.0F, 0.0F, 0.0F);
+		renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, textureID);
+		tessellator.draw();
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override
@@ -90,8 +119,8 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			Block block, int modelId, RenderBlocks renderer) {
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 
-		if (tile instanceof TilePeripheralCableCommon) {
-			TilePeripheralCableCommon pipeTile = (TilePeripheralCableCommon) tile;
+		if (tile instanceof TileCableCommon) {
+			TileCableCommon pipeTile = (TileCableCommon) tile;
 			renderCable(renderer, world, block, pipeTile.getConnectionState(),
 					x, y, z);
 		}

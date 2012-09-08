@@ -6,8 +6,8 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.cccable.common;
 
-import xfel.mods.cccable.common.blocks.BlockPeripheralCable;
-import xfel.mods.cccable.common.blocks.TilePeripheralCableServer;
+import xfel.mods.cccable.common.blocks.BlockCable;
+import xfel.mods.cccable.common.blocks.TileCableServer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Block;
 import cpw.mods.fml.common.Mod.Init;
@@ -28,14 +28,14 @@ public class PeripheralCableMod {
 	public static PeripheralCableMod instance;
 	
 	@Block(name = "peripheralcable")
-	public static BlockPeripheralCable cableBlock;
+	public static BlockCable cableBlock;
 	
 	@Init
 	public void init(FMLInitializationEvent evt){
 		
 		sideHandler.initSide();
 		
-		GameRegistry.registerTileEntity(TilePeripheralCableServer.class, "PeripheralCable");
+		GameRegistry.registerTileEntity(TileCableServer.class, "PeripheralCable");
 		
 	}
 }
