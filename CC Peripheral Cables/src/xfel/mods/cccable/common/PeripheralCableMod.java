@@ -6,6 +6,8 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.cccable.common;
 
+import javax.security.auth.callback.LanguageCallback;
+
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
 import cpw.mods.fml.common.Mod;
@@ -16,6 +18,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "CCCable", version = "@mod.version@", useMetadata = false, name = "ComputerCraft Peripheral Cables")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -32,6 +35,12 @@ public class PeripheralCableMod {
 	
 	@Init
 	public void init(FMLInitializationEvent evt){
+		
+		if(cableBlock==null){
+			cableBlock=new BlockCable(2030);
+			GameRegistry.registerBlock(cableBlock);
+			LanguageRegistry.addName(cableBlock, "Peripheral Cable");
+		}
 		
 		sideHandler.initSide();
 		

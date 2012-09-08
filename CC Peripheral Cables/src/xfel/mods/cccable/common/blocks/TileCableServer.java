@@ -26,8 +26,8 @@ import xfel.mods.cccable.common.routing.IRoutingTableListener;
 import xfel.mods.cccable.common.routing.RoutingTable;
 import xfel.mods.cccable.common.routing.RoutingTableEntry;
 
-public class TileCableServer extends TileCableCommon
-		implements IRoutingTableListener, IPeripheralCable, IPeripheral {
+public class TileCableServer extends TileCableCommon implements
+		IRoutingTableListener, IPeripheralCable, IPeripheral {
 
 	public static final ForgeDirection[] DIRS = { ForgeDirection.DOWN,
 			ForgeDirection.UP, ForgeDirection.NORTH, ForgeDirection.SOUTH,
@@ -55,6 +55,8 @@ public class TileCableServer extends TileCableCommon
 		if (connectionStateDirty) {
 			updateConnections();
 			connectionStateDirty = false;
+
+			worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
 		}
 		updateRoutingTable();
 	}
@@ -78,6 +80,7 @@ public class TileCableServer extends TileCableCommon
 		connectionState = 0;
 
 		IPeripheral newPeripheral = null;
+		ForgeDirection peripheralSide = ForgeDirection.UNKNOWN;
 
 		for (ForgeDirection dir : DIRS) {
 			int tx = xCoord + dir.offsetX;
@@ -93,7 +96,6 @@ public class TileCableServer extends TileCableCommon
 			if (te == null) {
 				continue;
 			}
-			ForgeDirection peripheralSide = ForgeDirection.UNKNOWN;
 			if (te instanceof TileCableServer) {
 				TileCableServer cable = (TileCableServer) te;
 
@@ -120,15 +122,13 @@ public class TileCableServer extends TileCableCommon
 					.equals("dan200.computer.shared.TileEntityComputer")) {
 				connectionState |= dir.flag;
 			}
-
-			if (newPeripheral != localPeripheral) {
-				doDetachPeripheral();
-				localPeripheral = newPeripheral;
-				doAttachPeripheral(peripheralSide);
-			}
 		}
 
-		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		if (newPeripheral != localPeripheral) {
+			doDetachPeripheral();
+			localPeripheral = newPeripheral;
+			doAttachPeripheral(peripheralSide);
+		}
 	}
 
 	/**

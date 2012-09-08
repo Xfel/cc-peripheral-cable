@@ -7,7 +7,9 @@
  */package xfel.mods.cccable.common.blocks;
 
 import net.minecraft.src.BlockContainer;
+import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
@@ -19,10 +21,11 @@ public class BlockCable extends BlockContainer {
 
 	private int renderType = -1;
 
-	protected BlockCable(int id) {
+	public BlockCable(int id) {
 		super(id, Material.glass);
 		setBlockName("cable.peripheral");
-		setTextureFile("terrain/ccable.png");
+		setTextureFile("/terrain/cccable.png");
+		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 
 	@Override
@@ -103,5 +106,16 @@ public class BlockCable extends BlockContainer {
 
 	public static boolean isConnected(int connectionState, ForgeDirection dir) {
 		return  (connectionState&dir.flag)!=0;
+	}
+	
+	public int getBlockTexture(IBlockAccess iba, int x, int y, int z, int side) {
+		TileEntity te = iba.getBlockTileEntity(x, y, z);
+
+		if (te instanceof TileCableCommon) {
+			TileCableCommon tpc = (TileCableCommon) te;
+			
+			return tpc.getColorTag()+1;
+		}
+		return 0;
 	}
 }

@@ -7,6 +7,7 @@
  */
 package xfel.mods.cccable.common.blocks;
 
+import xfel.mods.cccable.common.PeripheralCableMod;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.Packet;
@@ -16,7 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TileCableCommon extends TileEntity {
 
-	protected int colorTag;
+	protected int colorTag = -1;
 
 	protected int connectionState;
 
@@ -27,11 +28,13 @@ public class TileCableCommon extends TileEntity {
 	public void setColorTag(int colorTag) {
 		if (this.colorTag == colorTag)
 			return;
-		
+
 		cleanup();
 		this.colorTag = colorTag;
 
 		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord,
+				PeripheralCableMod.cableBlock.blockID);
 	}
 
 	public int getConnectionState() {
@@ -68,6 +71,7 @@ public class TileCableCommon extends TileEntity {
 	public void onDataPacket(NetworkManager net, Packet132TileEntityData pkt) {
 		colorTag = pkt.customParam1.getByte("col");
 		connectionState = pkt.customParam1.getByte("net");
+		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
 	}
 
 }
