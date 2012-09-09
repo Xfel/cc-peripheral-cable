@@ -12,6 +12,12 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import xfel.mods.cccable.common.CommonProxy;
 import xfel.mods.cccable.common.PeripheralCableMod;
 
+/**
+ * Client-Side proxy class. Manages the rendering code.
+ * 
+ * @author Xfel
+ *
+ */
 public class ClientProxy extends CommonProxy {
 	
 	@Override

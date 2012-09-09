@@ -43,6 +43,12 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.VersionParser;
 
+/**
+ * Main mod class
+ * 
+ * @author Xfel
+ *
+ */
 @Mod(modid = "CCCable", version = PeripheralCableMod.MOD_VERSION, useMetadata = false, name = "ComputerCraft Peripheral Cables")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PeripheralCableMod {
@@ -63,11 +69,17 @@ public class PeripheralCableMod {
 
 	private File minecraftDirectory;
 
+	/**
+	 * Retrieves the minecraft directory (as there seems to be no other way)
+	 */
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
 	}
 
+	/**
+	 * Registers blocks, names, tile entities and recipes
+	 */
 	@Init
 	public void init(FMLInitializationEvent evt) {
 		// compability until @Block is working
@@ -87,6 +99,9 @@ public class PeripheralCableMod {
 				"PeripheralCable");
 	}
 
+	/**
+	 * Injects the new peripheral api file
+	 */
 	@PostInit
 	public void postInit(FMLPostInitializationEvent evt) {
 		// inject the file into rom

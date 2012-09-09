@@ -10,6 +10,14 @@ import net.minecraft.src.ItemDye;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+/**
+ * An attachment of a specific peripheral to a specific computer on a specific address.
+ * 
+ * Also used as security wrapper for the {@link IComputerAccess} passed from the computer
+ * 
+ * @author Xfel
+ *
+ */
 public class PeripheralAttachment implements IComputerAccess {
 	private IPeripheral peripheral;
 
@@ -77,6 +85,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		return true;
 	}
 
+	// does the attach op
 	void attach() {
 		type = peripheral.getType();
 		methods = peripheral.getMethodNames();
@@ -94,6 +103,7 @@ public class PeripheralAttachment implements IComputerAccess {
 				new Object[] { getVirtualSide(cside, colorTag) });
 	}
 
+	// does the detach op
 	void detach() {
 		peripheral.detach(computer);
 
@@ -189,6 +199,13 @@ public class PeripheralAttachment implements IComputerAccess {
 		computer.queueEvent(event, arguments);
 	}
 
+	/**
+	 * Call a peripehral method...
+	 * @param methodName
+	 * @param args
+	 * @return
+	 * @throws Exception
+	 */
 	public Object[] call(String methodName, Object[] args) throws Exception {
 		assert (this.attached == true);
 		if (this.methodMap.containsKey(methodName)) {
@@ -202,6 +219,10 @@ public class PeripheralAttachment implements IComputerAccess {
 		throw new Exception("No such method " + methodName);
 	}
 
+	/**
+	 * Retrieve the peripheral method table.
+	 * @return
+	 */
 	public Map<Integer, String> getMethods() {
 		Map<Integer, String> table = new HashMap<Integer, String>();
 		for (int i = 0; i < methods.length; i++) {
@@ -210,6 +231,10 @@ public class PeripheralAttachment implements IComputerAccess {
 		return table;
 	}
 
+	/**
+	 * Returns the peripheral type.
+	 * @return
+	 */
 	public String getType() {
 		return type;
 	}
