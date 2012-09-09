@@ -17,6 +17,7 @@ import java.util.Map;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+import net.minecraft.src.ItemDye;
 import net.minecraft.src.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.api.ICableConnectable;
@@ -323,11 +324,20 @@ public class TileCableServer extends TileCableCommon implements
 			return listPeripherals(localComputers.get(computer));
 		}
 
-		if (arguments.length < 1 || !(arguments[0] instanceof Number)) {
+		if (arguments.length < 1 || !(arguments[0] instanceof String)) {
 			throw new Exception("invalid color tag");
 		}
 
-		int ctag = ((Number) arguments[0]).intValue();
+		int ctag = -1;
+		for (int i = 0; i < ItemDye.dyeColorNames.length; i++) {
+			if(ItemDye.dyeColorNames[i].equals(arguments[0])){
+				ctag=i;
+				break;
+			}
+		}
+		if(ctag==-1){
+			throw new Exception("invalid color tag "+arguments[0]);
+		}
 
 		RoutingTableEntry entry = routingTable.getPeripheralEntry(ctag);
 

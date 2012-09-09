@@ -4,16 +4,23 @@
  * This file is distributed under the terms of the Minecraft Mod Public 
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
- */package xfel.mods.cccable.common.blocks;
+ */
+package xfel.mods.cccable.common.blocks;
 
+import java.util.List;
+
+import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
+import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
+import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -67,7 +74,8 @@ public class BlockCable extends BlockContainer {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int blockId, int blockmeta) {
+	public void breakBlock(World world, int x, int y, int z, int blockId,
+			int blockmeta) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
 		if (te instanceof TileCableServer) {
@@ -76,16 +84,18 @@ public class BlockCable extends BlockContainer {
 		}
 		super.breakBlock(world, x, y, z, blockId, blockmeta);
 	}
-	
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int direction, float offsetX, float offsetY, float offsetZ) {
+
+	public boolean onBlockActivated(World world, int x, int y, int z,
+			EntityPlayer player, int direction, float offsetX, float offsetY,
+			float offsetZ) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
 		if (te instanceof TileCableCommon) {
 			TileCableCommon tpc = (TileCableCommon) te;
-			
-			ItemStack iih=player.getCurrentEquippedItem();
-			
-			if(iih.getItem()==Item.dyePowder){
+
+			ItemStack iih = player.getCurrentEquippedItem();
+
+			if (iih.getItem() == Item.dyePowder) {
 				tpc.setColorTag(iih.getItemDamage());
 				if (!player.capabilities.isCreativeMode) {
 					iih.stackSize--;
@@ -95,8 +105,8 @@ public class BlockCable extends BlockContainer {
 				}
 				return true;
 			}
-			
-			if(iih.getItem()==Item.bucketWater){
+
+			if (iih.getItem() == Item.bucketWater) {
 				tpc.setColorTag(-1);
 				return true;
 			}
@@ -105,17 +115,157 @@ public class BlockCable extends BlockContainer {
 	}
 
 	public static boolean isConnected(int connectionState, ForgeDirection dir) {
-		return  (connectionState&dir.flag)!=0;
+		return (connectionState & dir.flag) != 0;
 	}
-	
+
 	public int getBlockTexture(IBlockAccess iba, int x, int y, int z, int side) {
 		TileEntity te = iba.getBlockTileEntity(x, y, z);
 
 		if (te instanceof TileCableCommon) {
 			TileCableCommon tpc = (TileCableCommon) te;
-			
-			return tpc.getColorTag()+1;
+
+			return tpc.getColorTag() + 1;
 		}
 		return 0;
 	}
+
+	@Override
+	public void addCollidingBlockToList(World world, int x, int y, int z,
+			AxisAlignedBB bounds, List results, Entity entity) {
+		setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+		AxisAlignedBB center = super.getCollisionBoundingBoxFromPool(world, x,
+				y, z);
+
+		if (center != null && bounds.intersectsWith(center)) {
+			results.add(center);
+		}
+
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+
+		if (te instanceof TileCableCommon) {
+			int connections = ((TileCableCommon) te).getConnectionState();
+
+			if (isConnected(connections, ForgeDirection.WEST)) {
+				setBlockBounds(0.0F, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+
+			if (isConnected(connections, ForgeDirection.EAST)) {
+				setBlockBounds(0.25f, 0.25f, 0.25f, 1.0F, 0.75f, 0.75f);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+
+			if (isConnected(connections, ForgeDirection.DOWN)) {
+				setBlockBounds(0.25f, 0.0F, 0.25f, 0.75f, 0.75f, 0.75f);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+
+			if (isConnected(connections, ForgeDirection.UP)) {
+				setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 1.0F, 0.75f);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+
+			if (isConnected(connections, ForgeDirection.NORTH)) {
+				setBlockBounds(0.25f, 0.25f, 0.0F, 0.75f, 0.75f, 0.75f);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+
+			if (isConnected(connections, ForgeDirection.SOUTH)) {
+				setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 1.0F);
+				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
+						world, x, y, z);
+
+				if (part != null && bounds.intersectsWith(part)) {
+					results.add(part);
+				}
+			}
+		}
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess iba, int x, int y, int z) {
+		float xMin = 0.25f, xMax = 0.75f, yMin = 0.25f, yMax = 0.75f, zMin = 0.25f, zMax = 0.75f;
+
+		TileEntity te = iba.getBlockTileEntity(x, y, z);
+
+		if (te instanceof TileCableCommon) {
+			int connections = ((TileCableCommon) te).getConnectionState();
+
+			if (isConnected(connections, ForgeDirection.WEST))
+				xMin = 0.0F;
+
+			if (isConnected(connections, ForgeDirection.EAST))
+				xMax = 1.0F;
+
+			if (isConnected(connections, ForgeDirection.DOWN))
+				yMin = 0.0F;
+
+			if (isConnected(connections, ForgeDirection.UP))
+				yMax = 1.0F;
+
+			if (isConnected(connections, ForgeDirection.NORTH))
+				zMin = 0.0F;
+
+			if (isConnected(connections, ForgeDirection.SOUTH))
+				zMax = 1.0F;
+		}
+
+		setBlockBounds(xMin, yMin, zMin, xMax, yMax, zMax);
+	}
+
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x,
+			int y, int z) {
+		setBlockBoundsBasedOnState(world, x, y, z);
+
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z)
+
+		;
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int i,
+			int j, int k) {
+		return getCollisionBoundingBoxFromPool(world, i, j, k);
+	}
+
+	// @Override
+	// public MovingObjectPosition collisionRayTrace(World world, int x, int y,
+	// int z, Vec3 vec3d, Vec3 vec3d1) {
+	// setBlockBoundsBasedOnState(world, x, y, z);
+	//
+	// MovingObjectPosition r = super.collisionRayTrace(world, x, y, z, vec3d,
+	// vec3d1);
+	//
+	// setBlockBounds(0, 0, 0, 1, 1, 1);
+	//
+	// return r;
+	// }
+
 }
