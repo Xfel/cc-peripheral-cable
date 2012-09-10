@@ -5,7 +5,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
 public class RoutingTableEntry {
-	ForgeDirection side;
+	ForgeDirection side = ForgeDirection.UNKNOWN;
 	int distance;
 	int lifetime;
 	private Object target;
@@ -18,7 +18,7 @@ public class RoutingTableEntry {
 		this.id = incrementalTarget.id;
 		this.peripheral = incrementalTarget.peripheral;
 
-		incrementalTarget.distance += 1;
+		this.distance = incrementalTarget.distance + 1;
 
 		this.cside = incrementalTarget.cside;
 	}
@@ -63,8 +63,7 @@ public class RoutingTableEntry {
 		if (!isValid())
 			throw new IllegalStateException("Invalid entry");
 		if (this.peripheral) {
-			throw new UnsupportedOperationException(
-					"Target is not a computer");
+			throw new UnsupportedOperationException("Target is not a computer");
 		}
 		return this.cside;
 	}
@@ -91,8 +90,7 @@ public class RoutingTableEntry {
 		if (!isValid())
 			throw new IllegalStateException("Invalid entry");
 		if (this.peripheral) {
-			throw new UnsupportedOperationException(
-					"Target is not a computer");
+			throw new UnsupportedOperationException("Target is not a computer");
 		}
 		return (IComputerAccess) this.target;
 	}

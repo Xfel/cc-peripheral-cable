@@ -24,6 +24,9 @@ import net.minecraft.src.ItemStack;
 
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
+import xfel.mods.debug.BlockDebugPeripheral;
+import xfel.mods.debug.ItemDumper;
+import xfel.mods.debug.TestPeripheralCaller;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Block;
@@ -97,6 +100,11 @@ public class PeripheralCableMod {
 
 		GameRegistry.registerTileEntity(TileCableServer.class,
 				"PeripheralCable");
+		
+		// debug code:
+//		new BlockDebugPeripheral(3333);
+//		new TestPeripheralCaller(3334);
+//		new ItemDumper(3335);
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package xfel.mods.cccable.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -210,6 +211,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		assert (this.attached == true);
 		if (this.methodMap.containsKey(methodName)) {
 			int method = ((Integer) this.methodMap.get(methodName)).intValue();
+			
 			try {
 				return this.peripheral.callMethod(this, method, args);
 			} catch (Exception e) {
@@ -275,7 +277,24 @@ public class PeripheralAttachment implements IComputerAccess {
 			String computerSide) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
 				colorTag, computer, computerSide);
-
+		
 		return attachments.get(att);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("PeripheralAttachment [peripheral=");
+		builder.append(peripheral.getClass().getName());
+		builder.append(", colorTag=");
+		builder.append(colorTag);
+		builder.append(", computer=");
+		builder.append(computer.getID());
+		builder.append(", cside=");
+		builder.append(cside);
+		builder.append(", methods=");
+		builder.append(Arrays.toString(methods));
+		builder.append("]");
+		return builder.toString();
 	}
 }

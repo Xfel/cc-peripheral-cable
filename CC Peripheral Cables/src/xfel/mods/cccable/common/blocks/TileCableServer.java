@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.rtf.RTFEditorKit;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -60,6 +62,7 @@ public class TileCableServer extends TileCableCommon implements
 			worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
 		}
 		updateRoutingTable();
+//		System.out.println(routingTable);
 	}
 
 	/**
@@ -345,8 +348,9 @@ public class TileCableServer extends TileCableCommon implements
 			return new Object[] { Boolean.valueOf(entry != null) };
 		}
 
-		if (method == 3 && entry == null)
+		if (method == 3 && entry == null){
 			throw new Exception("No peripheral attached");
+		}
 		if (entry == null)
 			return null;
 
@@ -421,9 +425,14 @@ public class TileCableServer extends TileCableCommon implements
 						entry.getTargetPeripheral(), entry.getId(), computer,
 						computerSide);
 			}
-			routingTable.addLocalEntry(new RoutingTableEntry(computer,
+			routingTable.removeLocalEntry(new RoutingTableEntry(computer,
 					computerSide));
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return routingTable.toString()+"\n Cables at "+adjacentCables.keySet().toString();
 	}
 
 }

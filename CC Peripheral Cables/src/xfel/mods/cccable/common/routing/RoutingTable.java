@@ -42,6 +42,11 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	}
 
 	@Override
+	public String toString() {
+		return rtable.keySet().toString();
+	}
+
+	@Override
 	public Iterator<RoutingTableEntry> iterator() {
 		return this.rtable.values().iterator();
 	}
@@ -56,6 +61,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 
 	/**
 	 * Adds a local entry whose origin is at our current position
+	 * 
 	 * @param entry
 	 */
 	public synchronized void addLocalEntry(RoutingTableEntry entry) {
@@ -77,6 +83,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 
 	/**
 	 * Removes a local entry
+	 * 
 	 * @param entry
 	 */
 	public synchronized void removeLocalEntry(RoutingTableEntry entry) {
@@ -99,45 +106,56 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 
 	/**
 	 * Updates the routing table from an adjacent one.
-	 * @param updater the table to update from
-	 * @param side the relative side.
+	 * 
+	 * @param updater
+	 *            the table to update from
+	 * @param side
+	 *            the relative side.
 	 */
 	public synchronized void recieveUpdate(RoutingTable updater,
 			ForgeDirection side) {
-		Iterator it = updater.rtable.values().iterator();
-		while (it.hasNext()) {
-			RoutingTableEntry remoteEntry = (RoutingTableEntry) it.next();
-			RoutingTableEntry localEntry = this.rtable.get(remoteEntry);
+		if(updater==this){
+			System.err.println(side);
+			throw new IllegalArgumentException("Can't update with yourself");
+		}
+		
+		synchronized (updater) {
+			Iterator<RoutingTableEntry> it = updater.iterator();
+			while (it.hasNext()) {
+				RoutingTableEntry remoteEntry = (RoutingTableEntry) it.next();
+				RoutingTableEntry localEntry = this.rtable.get(remoteEntry);
 
-			if (remoteEntry.side == side.getOpposite()) {
-				// don't create loops
-				continue;
-			}
-
-			if (localEntry == null) {
-				// new entry
-				localEntry = new RoutingTableEntry(remoteEntry);
-				localEntry.side = side;
-				this.rtable.put(remoteEntry, localEntry);
-
-				if (localEntry.isPeripheralTarget()) {
-					if (listener != null) {
-						listener.peripheralAdded(this,
-								localEntry.getTargetPeripheral(),
-								localEntry.getId());
-					}
-				} else {
-					if (listener != null) {
-						listener.computerAdded(this,
-								localEntry.getTargetComputer(),
-								localEntry.getComputerSide());
-					}
+				if (remoteEntry.side == side.getOpposite()) {
+					// don't create loops
+					continue;
 				}
-			} else if (localEntry.distance > remoteEntry.distance) {
-				// update entry
-				localEntry.distance = remoteEntry.distance + 1;
-				localEntry.side = side;
-				localEntry.lifetime = 0;
+
+				if (localEntry == null) {
+					// new entry
+					localEntry = new RoutingTableEntry(remoteEntry);
+					localEntry.side = side;
+					this.rtable.put(localEntry, localEntry);
+
+					if (localEntry.isPeripheralTarget()) {
+						if (listener != null) {
+							listener.peripheralAdded(this,
+									localEntry.getTargetPeripheral(),
+									localEntry.getId());
+						}
+					} else {
+						if (listener != null) {
+							listener.computerAdded(this,
+									localEntry.getTargetComputer(),
+									localEntry.getComputerSide());
+						}
+					}
+				} else if (localEntry.distance > 0
+						&& localEntry.distance > remoteEntry.distance) {
+					// update entry
+					localEntry.distance = remoteEntry.distance + 1;
+					localEntry.side = side;
+					localEntry.lifetime = 0;
+				}
 			}
 		}
 	}
@@ -158,6 +176,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 			if (entry.lifetime >= 0) {
 				entry.lifetime++;
 				if (entry.lifetime > 3) {
+					// System.out.println("Lifetime expired: "+entry);
 					it.remove();
 
 					if (listener != null) {
