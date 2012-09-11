@@ -48,6 +48,9 @@ public class TileCableServer extends TileCableCommon implements
 
 	public TileCableServer() {
 		routingTable = new RoutingTable();
+		
+		routingTable.setRoutingTableListener(this);
+		
 		adjacentCables = new EnumMap<ForgeDirection, TileCableServer>(
 				ForgeDirection.class);
 		localComputers = new HashMap<IComputerAccess, String>();
@@ -371,10 +374,19 @@ public class TileCableServer extends TileCableCommon implements
 			}
 
 			return att.call((String) arguments[1],
-					Arrays.copyOfRange(arguments, 2, arguments.length - 1));
+					truncateArray(arguments, 2));
 		}
 		assert false;
 		return null;
+	}
+
+	private static Object[] truncateArray(Object[] arguments, int start) {
+		if(start>=arguments.length)return new Object[0];
+		
+		Object[] na=new Object[arguments.length-start];
+		System.arraycopy(arguments, 2, na, 0, na.length);
+		
+		return na;
 	}
 
 	private Object[] listPeripherals(String cside) {

@@ -2,6 +2,7 @@ package xfel.mods.debug;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 import net.minecraft.server.MinecraftServer;
@@ -64,6 +65,7 @@ public class BlockDebugPeripheral extends BlockContainer {
 		
 		GameRegistry.registerBlock(this);
 		GameRegistry.registerTileEntity(TileDebugPeripheral.class, "DebugPeripheral");
+		LanguageRegistry.addName(this, "Debug Peripheral");
 	}
 	
 	@Override

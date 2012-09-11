@@ -176,7 +176,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 			if (entry.lifetime >= 0) {
 				entry.lifetime++;
 				if (entry.lifetime > 3) {
-					// System.out.println("Lifetime expired: "+entry);
+					 System.out.println("Lifetime expired: "+entry);
 					it.remove();
 
 					if (listener != null) {

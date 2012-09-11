@@ -88,6 +88,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	// does the attach op
 	void attach() {
+//		System.out.println("attach "+this);
 		type = peripheral.getType();
 		methods = peripheral.getMethodNames();
 		methodMap = new HashMap<String, Integer>();
@@ -106,6 +107,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	// does the detach op
 	void detach() {
+//		System.out.println("detach "+this);
 		peripheral.detach(computer);
 
 		for (String loc : myMounts) {

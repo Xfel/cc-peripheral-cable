@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="cccable" basedir=".">
 
-	
+
 	<!-- environment properties -->
 	<property name="mcp.dir" location="${workspace.dir}/../mcp" />
 	<property name="mcp.source.dir" location="${mcp.dir}/src/minecraft" />
+    <property name="mcp.source.base.dir" location="${mcp.dir}/src_work/minecraft" />
 	<property name="mcp.reobf.dir" location="${mcp.dir}/reobf/minecraft" />
 
 	<property name="build.dir" location="${workspace.dir}/../build" />
@@ -24,17 +25,21 @@
 
 	<target name="compile" depends="clean">
 
-        <echo>Compiling ${ant.project.name}</echo>
+		<echo>Compiling ${ant.project.name}</echo>
 		<!-- publish files to copy -->
 		<echo>Collecting java files...</echo>
+		<delete dir="${mcp.source.dir}" />
 		<copy todir="${mcp.source.dir}">
-			<fileset dir="${source.dir}" excludes="**/.git" />
+			<fileset dir="${mcp.source.base.dir}" />
+		</copy>
+		<copy todir="${mcp.source.dir}">
+			<fileset dir="${source.dir}" excludes="**/.git,**/debug/**" />
 			<filterset>
 				<filter token="mod.version" value="${mod.version}" />
 			</filterset>
 		</copy>
 
-        <echo>Executing mcp routines</echo>
+		<echo>Executing mcp routines</echo>
 		<!-- Recompile -->
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
 			<arg line="/c recompile.bat" />
@@ -53,7 +58,7 @@
 			<arg value="reobfuscate.sh" />
 		</exec>
 
-        <echo>Merging resourcs</echo>
+		<echo>Merging resourcs</echo>
 		<!-- Copy classes -->
 		<copy todir="${build.dir}/${mod.id}">
 			<fileset dir="${mcp.reobf.dir}" />
