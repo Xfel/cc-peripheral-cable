@@ -15,6 +15,8 @@ package xfel.mods.cccable.common;
  */
 public class CommonProxy {
 
+	public static final String BLOCK_TEXTURE = "/terrain/cccable.png";
+
 	/**
 	 * Initializes side-specific data
 	 */

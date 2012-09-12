@@ -9,6 +9,8 @@ package xfel.mods.cccable.common.blocks;
 
 import java.util.List;
 
+import xfel.mods.cccable.common.CommonProxy;
+
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
@@ -31,7 +33,7 @@ public class BlockCable extends BlockContainer {
 	public BlockCable(int id) {
 		super(id, Material.glass);
 		setBlockName("cable.peripheral");
-		setTextureFile("/terrain/cccable.png");
+		setTextureFile(CommonProxy.BLOCK_TEXTURE);
 		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 

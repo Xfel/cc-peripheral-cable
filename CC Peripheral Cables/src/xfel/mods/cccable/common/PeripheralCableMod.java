@@ -24,9 +24,9 @@ import net.minecraft.src.ItemStack;
 
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
-import xfel.mods.debug.BlockDebugPeripheral;
-import xfel.mods.debug.ItemDumper;
-import xfel.mods.debug.TestPeripheralCaller;
+//import xfel.mods.debug.BlockDebugPeripheral;
+//import xfel.mods.debug.ItemDumper;
+//import xfel.mods.debug.TestPeripheralCaller;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Block;
@@ -78,6 +78,7 @@ public class PeripheralCableMod {
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
+		evt.getModMetadata().version=MOD_VERSION;
 	}
 
 	/**

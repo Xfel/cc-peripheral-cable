@@ -22,7 +22,7 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	protected void initSide() {
-		MinecraftForgeClient.preloadTexture("/terrain/cccable.png");
+		MinecraftForgeClient.preloadTexture(BLOCK_TEXTURE);
 		
 		int cableRenderId = RenderingRegistry.getNextAvailableRenderId();
 		PeripheralCableMod.cableBlock.setRenderType(cableRenderId);
