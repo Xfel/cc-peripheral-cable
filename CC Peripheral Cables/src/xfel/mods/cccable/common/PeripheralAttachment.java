@@ -50,7 +50,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + colorTag;
-		result = prime * result + ((computer == null) ? 0 : computer.getID());
+		result = prime * result + ((computer == null) ? 0 : System.identityHashCode(computer));
 		result = prime * result + ((cside == null) ? 0 : cside.hashCode());
 		result = prime * result
 				+ ((peripheral == null) ? 0 : peripheral.hashCode());

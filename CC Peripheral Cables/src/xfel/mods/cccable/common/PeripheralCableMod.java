@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 import javax.security.auth.callback.LanguageCallback;
 
@@ -28,6 +29,7 @@ import xfel.mods.cccable.common.blocks.TileCableServer;
 //import xfel.mods.debug.ItemDumper;
 //import xfel.mods.debug.TestPeripheralCaller;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Block;
 import cpw.mods.fml.common.Mod.Init;
@@ -56,6 +58,13 @@ import cpw.mods.fml.common.versioning.VersionParser;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PeripheralCableMod {
 
+	public static final Logger MOD_LOGGER;
+
+	static {
+		MOD_LOGGER = Logger.getLogger("CCCable");
+		MOD_LOGGER.setParent(FMLLog.getLogger());
+	}
+	
 	static final String MOD_VERSION = "@mod.version@";
 
 	@SidedProxy(clientSide = "xfel.mods.cccable.client.ClientProxy", serverSide = "xfel.mods.cccable.common.CommonProxy")

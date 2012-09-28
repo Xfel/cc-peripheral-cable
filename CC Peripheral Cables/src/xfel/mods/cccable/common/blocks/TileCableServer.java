@@ -13,6 +13,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.swing.text.rtf.RTFEditorKit;
 
@@ -25,6 +26,7 @@ import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.api.ICableConnectable;
 import xfel.mods.cccable.api.IPeripheralCable;
 import xfel.mods.cccable.common.PeripheralAttachment;
+import xfel.mods.cccable.common.PeripheralCableMod;
 import xfel.mods.cccable.common.routing.IRoutingTableListener;
 import xfel.mods.cccable.common.routing.RoutingTable;
 import xfel.mods.cccable.common.routing.RoutingTableEntry;
@@ -48,9 +50,9 @@ public class TileCableServer extends TileCableCommon implements
 
 	public TileCableServer() {
 		routingTable = new RoutingTable();
-		
+
 		routingTable.setRoutingTableListener(this);
-		
+
 		adjacentCables = new EnumMap<ForgeDirection, TileCableServer>(
 				ForgeDirection.class);
 		localComputers = new HashMap<IComputerAccess, String>();
@@ -65,7 +67,7 @@ public class TileCableServer extends TileCableCommon implements
 			worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
 		}
 		updateRoutingTable();
-//		System.out.println(routingTable);
+		// System.out.println(routingTable);
 	}
 
 	/**
@@ -162,10 +164,19 @@ public class TileCableServer extends TileCableCommon implements
 				for (RoutingTableEntry entry : routingTable) {
 					if (entry.isPeripheralTarget())
 						continue;
-
-					PeripheralAttachment.attachPeripheral(localPeripheral,
-							colorTag, entry.getTargetComputer(),
-							entry.getComputerSide());
+					try {
+						PeripheralAttachment.attachPeripheral(localPeripheral,
+								colorTag, entry.getTargetComputer(),
+								entry.getComputerSide());
+					} catch (Exception e) {
+						if (!"You are not attached to this Computer".equals(e
+								.getMessage())) {
+							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+									"Error detaching peripheral", e);
+						}else{
+							PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+						}
+					}
 				}
 				routingTable.addLocalEntry(new RoutingTableEntry(
 						localPeripheral, colorTag));
@@ -183,10 +194,19 @@ public class TileCableServer extends TileCableCommon implements
 				for (RoutingTableEntry entry : routingTable) {
 					if (entry.isPeripheralTarget())
 						continue;
-
-					PeripheralAttachment.detachPeripheral(localPeripheral,
-							colorTag, entry.getTargetComputer(),
-							entry.getComputerSide());
+					try {
+						PeripheralAttachment.detachPeripheral(localPeripheral,
+								colorTag, entry.getTargetComputer(),
+								entry.getComputerSide());
+					} catch (Exception e) {
+						if (!"You are not attached to this Computer".equals(e
+								.getMessage())) {
+							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+									"Error attaching peripheral", e);
+						}else{
+							PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+						}
+					}
 				}
 				routingTable.removeLocalEntry(new RoutingTableEntry(
 						localPeripheral, colorTag));
@@ -203,8 +223,18 @@ public class TileCableServer extends TileCableCommon implements
 			IPeripheral peripheral, int colorTag) {
 		for (Map.Entry<IComputerAccess, String> entry : localComputers
 				.entrySet()) {
-			PeripheralAttachment.attachPeripheral(peripheral, colorTag,
-					entry.getKey(), entry.getValue());
+			try {
+				PeripheralAttachment.attachPeripheral(peripheral, colorTag,
+						entry.getKey(), entry.getValue());
+			} catch (Exception e) {
+				if (!"You are not attached to this Computer".equals(e
+						.getMessage())) {
+					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+							"Error attaching peripheral", e);
+				}else{
+					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+				}
+			}
 		}
 	}
 
@@ -213,8 +243,18 @@ public class TileCableServer extends TileCableCommon implements
 			IPeripheral peripheral, int colorTag) {
 		for (Map.Entry<IComputerAccess, String> entry : localComputers
 				.entrySet()) {
-			PeripheralAttachment.detachPeripheral(peripheral, colorTag,
-					entry.getKey(), entry.getValue());
+			try {
+				PeripheralAttachment.detachPeripheral(peripheral, colorTag,
+						entry.getKey(), entry.getValue());
+			} catch (Exception e) {
+				if (!"You are not attached to this Computer".equals(e
+						.getMessage())) {
+					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+							"Error detaching peripheral", e);
+				}else{
+					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+				}
+			}
 		}
 	}
 
@@ -222,8 +262,18 @@ public class TileCableServer extends TileCableCommon implements
 	public void computerAdded(RoutingTable routingTable,
 			IComputerAccess computer, String computerSide) {
 		if (localPeripheral != null) {
-			PeripheralAttachment.attachPeripheral(localPeripheral, colorTag,
-					computer, computerSide);
+			try {
+				PeripheralAttachment.attachPeripheral(localPeripheral,
+						colorTag, computer, computerSide);
+			} catch (Exception e) {
+				if (!"You are not attached to this Computer".equals(e
+						.getMessage())) {
+					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+							"Error attaching peripheral", e);
+				}else{
+					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+				}
+			}
 		}
 	}
 
@@ -231,8 +281,18 @@ public class TileCableServer extends TileCableCommon implements
 	public void computerRemoved(RoutingTable routingTable,
 			IComputerAccess computer, String computerSide) {
 		if (localPeripheral != null) {
-			PeripheralAttachment.detachPeripheral(localPeripheral, colorTag,
-					computer, computerSide);
+			try {
+				PeripheralAttachment.detachPeripheral(localPeripheral,
+						colorTag, computer, computerSide);
+			} catch (Exception e) {
+				if (!"You are not attached to this Computer".equals(e
+						.getMessage())) {
+					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
+							"Error detaching peripheral", e);
+				}else{
+					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+				}
+			}
 		}
 	}
 
@@ -336,13 +396,13 @@ public class TileCableServer extends TileCableCommon implements
 
 		int ctag = -1;
 		for (int i = 0; i < ItemDye.dyeColorNames.length; i++) {
-			if(ItemDye.dyeColorNames[i].equals(arguments[0])){
-				ctag=i;
+			if (ItemDye.dyeColorNames[i].equals(arguments[0])) {
+				ctag = i;
 				break;
 			}
 		}
-		if(ctag==-1){
-			throw new Exception("invalid color tag "+arguments[0]);
+		if (ctag == -1) {
+			throw new Exception("invalid color tag " + arguments[0]);
 		}
 
 		RoutingTableEntry entry = routingTable.getPeripheralEntry(ctag);
@@ -351,7 +411,7 @@ public class TileCableServer extends TileCableCommon implements
 			return new Object[] { Boolean.valueOf(entry != null) };
 		}
 
-		if (method == 3 && entry == null){
+		if (method == 3 && entry == null) {
 			throw new Exception("No peripheral attached");
 		}
 		if (entry == null)
@@ -373,19 +433,19 @@ public class TileCableServer extends TileCableCommon implements
 				throw new Exception("string expected");
 			}
 
-			return att.call((String) arguments[1],
-					truncateArray(arguments, 2));
+			return att.call((String) arguments[1], truncateArray(arguments, 2));
 		}
 		assert false;
 		return null;
 	}
 
 	private static Object[] truncateArray(Object[] arguments, int start) {
-		if(start>=arguments.length)return new Object[0];
-		
-		Object[] na=new Object[arguments.length-start];
+		if (start >= arguments.length)
+			return new Object[0];
+
+		Object[] na = new Object[arguments.length - start];
 		System.arraycopy(arguments, 2, na, 0, na.length);
-		
+
 		return na;
 	}
 
@@ -441,10 +501,11 @@ public class TileCableServer extends TileCableCommon implements
 					computerSide));
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return routingTable.toString()+"\n Cables at "+adjacentCables.keySet().toString();
+		return routingTable.toString() + "\n Cables at "
+				+ adjacentCables.keySet().toString();
 	}
 
 }
