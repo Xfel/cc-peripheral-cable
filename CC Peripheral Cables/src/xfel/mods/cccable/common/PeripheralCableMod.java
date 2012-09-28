@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.callback.LanguageCallback;
@@ -22,6 +23,7 @@ import javax.security.auth.callback.LanguageCallback;
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
+import net.minecraftforge.common.Configuration;
 
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
@@ -52,7 +54,7 @@ import cpw.mods.fml.common.versioning.VersionParser;
  * Main mod class
  * 
  * @author Xfel
- *
+ * 
  */
 @Mod(modid = "CCCable", version = PeripheralCableMod.MOD_VERSION, useMetadata = false, name = "ComputerCraft Peripheral Cables")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -64,7 +66,7 @@ public class PeripheralCableMod {
 		MOD_LOGGER = Logger.getLogger("CCCable");
 		MOD_LOGGER.setParent(FMLLog.getLogger());
 	}
-	
+
 	static final String MOD_VERSION = "@mod.version@";
 
 	@SidedProxy(clientSide = "xfel.mods.cccable.client.ClientProxy", serverSide = "xfel.mods.cccable.common.CommonProxy")
@@ -72,11 +74,11 @@ public class PeripheralCableMod {
 
 	@Instance
 	public static PeripheralCableMod instance;
-	
+
 	@Metadata
 	public static ModMetadata metadata;
 
-	@Block(name = "PeripheralCable")
+	// @Block(name = "PeripheralCable")
 	public static BlockCable cableBlock;
 
 	private File minecraftDirectory;
@@ -87,7 +89,20 @@ public class PeripheralCableMod {
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
-		evt.getModMetadata().version=MOD_VERSION;
+		evt.getModMetadata().version = MOD_VERSION;
+
+		// compability until @Block is working
+		// if (cableBlock == null) {
+		Configuration config = new Configuration(
+				evt.getSuggestedConfigurationFile());
+		config.load();
+
+		cableBlock = new BlockCable(config.getOrCreateBlockIdProperty(
+				"cable.id", 2030).getInt());
+		GameRegistry.registerBlock(cableBlock);
+		// }
+
+		config.save();
 	}
 
 	/**
@@ -95,11 +110,6 @@ public class PeripheralCableMod {
 	 */
 	@Init
 	public void init(FMLInitializationEvent evt) {
-		// compability until @Block is working
-		if (cableBlock == null) {
-			cableBlock = new BlockCable(2030);
-			GameRegistry.registerBlock(cableBlock);
-		}
 
 		LanguageRegistry.addName(cableBlock, "Peripheral Cable");
 		CraftingManager.getInstance().addRecipe(new ItemStack(cableBlock, 6),
@@ -110,11 +120,11 @@ public class PeripheralCableMod {
 
 		GameRegistry.registerTileEntity(TileCableServer.class,
 				"PeripheralCable");
-		
+
 		// debug code:
-//		new BlockDebugPeripheral(3333);
-//		new TestPeripheralCaller(3334);
-//		new ItemDumper(3335);
+		// new BlockDebugPeripheral(3333);
+		// new TestPeripheralCaller(3334);
+		// new ItemDumper(3335);
 	}
 
 	/**
@@ -136,16 +146,14 @@ public class PeripheralCableMod {
 				firstline = br.readLine();
 
 			} catch (IOException e) {
-				System.err.println("Error reading version tag");
-				e.printStackTrace();
-			} finally {
+				MOD_LOGGER.log(Level.SEVERE, "Error reading version tag", e);
+				} finally {
 
 				if (br != null) {
 					try {
 						br.close();
 					} catch (IOException e) {
-						System.err.println("Error closing stream:");
-						e.printStackTrace();
+						MOD_LOGGER.log(Level.SEVERE, "Error closing file", e);
 					}
 				}
 			}
@@ -153,39 +161,43 @@ public class PeripheralCableMod {
 			int vmIndex = firstline.indexOf('v');
 
 			if (vmIndex != -1) {
-				String version=firstline.substring(vmIndex + 1);
-				
-				if(version.compareTo(MOD_VERSION)>=0){
+				String version = firstline.substring(vmIndex + 1);
+
+				MOD_LOGGER.log(Level.INFO, "Existing peripheral api file found, has version {1}",version);
+				if (version.compareTo(MOD_VERSION) >= 0) {
 					return;
 				}
 			}
-		} else if (!apiLoc.getParentFile().exists()) {
-			apiLoc.getParentFile().mkdirs();
+		} else {
+			MOD_LOGGER.log(Level.INFO, "Peripheral api file doesn't exist; creating");
+			if (!apiLoc.getParentFile().exists()) {
+				apiLoc.getParentFile().mkdirs();
+			}
 		}
-		
-		InputStream fileSource=getClass().getResourceAsStream("/lua/peripheralAPI.lua");
+
+		MOD_LOGGER.log(Level.INFO, "Injecting peripheral api file with version {1}",MOD_VERSION);
+		InputStream fileSource = getClass().getResourceAsStream(
+				"/lua/peripheralAPI.lua");
 		OutputStream fos = null;
-		try{
-			fos=new FileOutputStream(apiLoc);
-			
+		try {
+			fos = new FileOutputStream(apiLoc);
+
 			fos.write("-- v".getBytes());
 			fos.write(MOD_VERSION.getBytes());
 			fos.write('\n');
-			
+
 			byte[] b = new byte[4096];
-		    int read;
-		    while ((read = fileSource.read(b)) != -1)
-		      fos.write(b, 0, read);
+			int read;
+			while ((read = fileSource.read(b)) != -1)
+				fos.write(b, 0, read);
 		} catch (IOException e) {
-			System.err.println("Error copying file");
-			e.printStackTrace();
-		}finally{
+			MOD_LOGGER.log(Level.SEVERE, "Error copying file", e);
+		} finally {
 			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException e) {
-					System.err.println("Error closing stream:");
-					e.printStackTrace();
+					MOD_LOGGER.log(Level.SEVERE, "Error closing file", e);
 				}
 			}
 		}

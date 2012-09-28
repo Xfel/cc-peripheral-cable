@@ -174,7 +174,7 @@ public class TileCableServer extends TileCableCommon implements
 							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 									"Error detaching peripheral", e);
 						}else{
-							PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+							PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 						}
 					}
 				}
@@ -204,7 +204,7 @@ public class TileCableServer extends TileCableCommon implements
 							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 									"Error attaching peripheral", e);
 						}else{
-							PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+							PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 						}
 					}
 				}
@@ -232,7 +232,7 @@ public class TileCableServer extends TileCableCommon implements
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error attaching peripheral", e);
 				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 				}
 			}
 		}
@@ -252,7 +252,7 @@ public class TileCableServer extends TileCableCommon implements
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error detaching peripheral", e);
 				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 				}
 			}
 		}
@@ -271,7 +271,7 @@ public class TileCableServer extends TileCableCommon implements
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error attaching peripheral", e);
 				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 				}
 			}
 		}
@@ -290,7 +290,7 @@ public class TileCableServer extends TileCableCommon implements
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error detaching peripheral", e);
 				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.FINE, "Invalid computer state - not fatal, but also not nice", e);
+					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
 				}
 			}
 		}

@@ -210,11 +210,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		if (this.methodMap.containsKey(methodName)) {
 			int method = ((Integer) this.methodMap.get(methodName)).intValue();
 			
-			try {
-				return this.peripheral.callMethod(this, method, args);
-			} catch (Exception e) {
-				throw new Exception(e.getMessage());
-			}
+			return this.peripheral.callMethod(this, method, args);
 		}
 		throw new Exception("No such method " + methodName);
 	}
