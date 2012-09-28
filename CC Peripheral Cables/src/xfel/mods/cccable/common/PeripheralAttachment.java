@@ -67,11 +67,7 @@ public class PeripheralAttachment implements IComputerAccess {
 			return false;
 		PeripheralAttachment other = (PeripheralAttachment) obj;
 		if (colorTag != other.colorTag)
-			return false;
-		if (computer == null) {
-			if (other.computer != null)
-				return false;
-		} else if (computer.getID() != other.computer.getID())
+		if (computer != other.computer)
 			return false;
 		if (cside == null) {
 			if (other.cside != null)
