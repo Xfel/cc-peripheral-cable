@@ -16,7 +16,7 @@
 
 	<!-- mod properties -->
 	<property name="mod.id" value="${ant.project.name}" />
-	<property name="mod.version" value="1.1.0" />
+	<property name="mod.version" value="1.1.2" />
 	<property name="mod.api.files" value="xfel/mods/cccable/api/**" />
 
 	<target name="clean">

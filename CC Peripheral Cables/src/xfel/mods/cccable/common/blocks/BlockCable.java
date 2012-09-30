@@ -92,7 +92,7 @@ public class BlockCable extends BlockContainer {
 			float offsetZ) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te instanceof TileCableCommon) {
+		if (te instanceof TileCableCommon&&player.getCurrentEquippedItem()!=null) {
 			TileCableCommon tpc = (TileCableCommon) te;
 
 			ItemStack iih = player.getCurrentEquippedItem();
