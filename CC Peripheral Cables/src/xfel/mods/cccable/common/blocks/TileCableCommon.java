@@ -7,13 +7,12 @@
  */
 package xfel.mods.cccable.common.blocks;
 
-import xfel.mods.cccable.common.PeripheralCableMod;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NetworkManager;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet132TileEntityData;
 import net.minecraft.src.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import xfel.mods.cccable.common.PeripheralCableMod;
 
 public class TileCableCommon extends TileEntity {
 
@@ -60,7 +59,7 @@ public class TileCableCommon extends TileEntity {
 	}
 
 	@Override
-	public Packet getAuxillaryInfoPacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setByte("col", (byte) colorTag);
 		nbt.setByte("net", (byte) connectionState);

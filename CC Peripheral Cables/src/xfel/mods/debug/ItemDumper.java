@@ -19,7 +19,7 @@ public class ItemDumper extends Item{
 	public ItemDumper(int id) {
 		super(id);
 		setItemName("debug.dumper");
-		setTabToDisplayOn(CreativeTabs.tabMisc);
+		setCreativeTab(CreativeTabs.tabMisc);
 		
 		LanguageRegistry.addName(this, "Tile Entity Dumper");
 	}

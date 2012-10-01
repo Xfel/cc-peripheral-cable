@@ -1,10 +1,8 @@
 package xfel.mods.cccable.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 
 import net.minecraft.src.ItemDye;

@@ -9,8 +9,6 @@ package xfel.mods.cccable.common.blocks;
 
 import java.util.List;
 
-import xfel.mods.cccable.common.CommonProxy;
-
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
@@ -20,11 +18,10 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
-import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.TileEntity;
-import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
+import xfel.mods.cccable.common.CommonProxy;
 
 public class BlockCable extends BlockContainer {
 

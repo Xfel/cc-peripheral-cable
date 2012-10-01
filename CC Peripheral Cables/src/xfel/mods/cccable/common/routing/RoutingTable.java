@@ -7,11 +7,8 @@
  */
 package xfel.mods.cccable.common.routing;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import net.minecraftforge.common.ForgeDirection;
 
@@ -164,7 +161,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	 * update the lifetime of the local entries.
 	 */
 	public synchronized void updateEntries() {
-		Iterator it = this.rtable.values().iterator();
+		Iterator<RoutingTableEntry> it = this.rtable.values().iterator();
 		while (it.hasNext()) {
 			RoutingTableEntry entry = (RoutingTableEntry) it.next();
 

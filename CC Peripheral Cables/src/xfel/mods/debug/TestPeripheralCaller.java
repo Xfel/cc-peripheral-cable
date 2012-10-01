@@ -22,7 +22,7 @@ public class TestPeripheralCaller extends Item {
 	public TestPeripheralCaller(int id) {
 		super(id);
 		setItemName("debug.caller");
-		setTabToDisplayOn(CreativeTabs.tabMisc);
+		setCreativeTab(CreativeTabs.tabMisc);
 
 		LanguageRegistry.addName(this, "Test peripheral method invoker");
 	}

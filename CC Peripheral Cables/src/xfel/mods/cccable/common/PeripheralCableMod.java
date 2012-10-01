@@ -9,7 +9,6 @@ package xfel.mods.cccable.common;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,22 +17,14 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.security.auth.callback.LanguageCallback;
-
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraftforge.common.Configuration;
-
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
-//import xfel.mods.debug.BlockDebugPeripheral;
-//import xfel.mods.debug.ItemDumper;
-//import xfel.mods.debug.TestPeripheralCaller;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Block;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
@@ -47,8 +38,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.common.versioning.ArtifactVersion;
-import cpw.mods.fml.common.versioning.VersionParser;
+//import xfel.mods.debug.BlockDebugPeripheral;
+//import xfel.mods.debug.ItemDumper;
+//import xfel.mods.debug.TestPeripheralCaller;
 
 /**
  * Main mod class
@@ -97,7 +89,7 @@ public class PeripheralCableMod {
 				evt.getSuggestedConfigurationFile());
 		config.load();
 
-		cableBlock = new BlockCable(config.getOrCreateBlockIdProperty(
+		cableBlock = new BlockCable(config.getBlock(
 				"cable.id", 2030).getInt());
 		GameRegistry.registerBlock(cableBlock);
 		// }

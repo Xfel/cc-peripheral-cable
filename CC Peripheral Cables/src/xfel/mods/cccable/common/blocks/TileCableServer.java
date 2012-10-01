@@ -8,17 +8,11 @@
 package xfel.mods.cccable.common.blocks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
-import javax.swing.text.rtf.RTFEditorKit;
-
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
 
 import net.minecraft.src.ItemDye;
 import net.minecraft.src.TileEntity;
@@ -30,6 +24,8 @@ import xfel.mods.cccable.common.PeripheralCableMod;
 import xfel.mods.cccable.common.routing.IRoutingTableListener;
 import xfel.mods.cccable.common.routing.RoutingTable;
 import xfel.mods.cccable.common.routing.RoutingTableEntry;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 
 public class TileCableServer extends TileCableCommon implements
 		IRoutingTableListener, IPeripheralCable, IPeripheral {
