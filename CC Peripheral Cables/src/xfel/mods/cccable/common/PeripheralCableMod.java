@@ -155,7 +155,7 @@ public class PeripheralCableMod {
 			if (vmIndex != -1) {
 				String version = firstline.substring(vmIndex + 1);
 
-				MOD_LOGGER.log(Level.INFO, "Existing peripheral api file found, has version {0}",version);
+				MOD_LOGGER.log(Level.INFO, "Existing peripheral api file found, has version "+version);
 				if (version.compareTo(MOD_VERSION) >= 0) {
 					return;
 				}
@@ -167,7 +167,7 @@ public class PeripheralCableMod {
 			}
 		}
 
-		MOD_LOGGER.log(Level.INFO, "Injecting peripheral api file with version {0}",MOD_VERSION);
+		MOD_LOGGER.log(Level.INFO, "Injecting peripheral api file with version "+MOD_VERSION);
 		InputStream fileSource = getClass().getResourceAsStream(
 				"/lua/peripheralAPI.lua");
 		OutputStream fos = null;

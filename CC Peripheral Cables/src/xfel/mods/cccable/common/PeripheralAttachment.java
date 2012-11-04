@@ -10,14 +10,20 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
 /**
- * An attachment of a specific peripheral to a specific computer on a specific address.
+ * An attachment of a specific peripheral to a specific computer on a specific
+ * address.
  * 
- * Also used as security wrapper for the {@link IComputerAccess} passed from the computer
+ * Also used as security wrapper for the {@link IComputerAccess} passed from the
+ * computer
  * 
  * @author Xfel
- *
+ * 
  */
 public class PeripheralAttachment implements IComputerAccess {
+	public static final String[] colorNames = { "green", "brown", "black",
+			"pink", "yellow", "orange", "magenta", "purple", "cyan", "red",
+			"white", "lightBlue", "lightGray", "gray", "lime", "blue" };
+
 	private IPeripheral peripheral;
 
 	private int colorTag;
@@ -48,7 +54,8 @@ public class PeripheralAttachment implements IComputerAccess {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + colorTag;
-		result = prime * result + ((computer == null) ? 0 : System.identityHashCode(computer));
+		result = prime * result
+				+ ((computer == null) ? 0 : System.identityHashCode(computer));
 		result = prime * result + ((cside == null) ? 0 : cside.hashCode());
 		result = prime * result
 				+ ((peripheral == null) ? 0 : peripheral.hashCode());
@@ -65,8 +72,8 @@ public class PeripheralAttachment implements IComputerAccess {
 			return false;
 		PeripheralAttachment other = (PeripheralAttachment) obj;
 		if (colorTag != other.colorTag)
-		if (computer != other.computer)
-			return false;
+			if (computer != other.computer)
+				return false;
 		if (cside == null) {
 			if (other.cside != null)
 				return false;
@@ -82,7 +89,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	// does the attach op
 	void attach() {
-//		System.out.println("attach "+this);
+		// System.out.println("attach "+this);
 		type = peripheral.getType();
 		methods = peripheral.getMethodNames();
 		methodMap = new HashMap<String, Integer>();
@@ -101,7 +108,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	// does the detach op
 	void detach() {
-//		System.out.println("detach "+this);
+		// System.out.println("detach "+this);
 		peripheral.detach(computer);
 
 		for (String loc : myMounts) {
@@ -198,6 +205,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	/**
 	 * Call a peripehral method...
+	 * 
 	 * @param methodName
 	 * @param args
 	 * @return
@@ -207,7 +215,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		assert (this.attached == true);
 		if (this.methodMap.containsKey(methodName)) {
 			int method = ((Integer) this.methodMap.get(methodName)).intValue();
-			
+
 			return this.peripheral.callMethod(this, method, args);
 		}
 		throw new Exception("No such method " + methodName);
@@ -215,6 +223,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	/**
 	 * Retrieve the peripheral method table.
+	 * 
 	 * @return
 	 */
 	public Map<Integer, String> getMethods() {
@@ -227,6 +236,7 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	/**
 	 * Returns the peripheral type.
+	 * 
 	 * @return
 	 */
 	public String getType() {
@@ -236,7 +246,7 @@ public class PeripheralAttachment implements IComputerAccess {
 	public static String getVirtualSide(String side, int colorTag) {
 		StringBuilder sb = new StringBuilder(side);
 		sb.append(':');
-		sb.append(ItemDye.dyeColorNames[colorTag]);
+		sb.append(colorNames[colorTag]);
 		return sb.toString();
 	}
 
@@ -269,7 +279,7 @@ public class PeripheralAttachment implements IComputerAccess {
 			String computerSide) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
 				colorTag, computer, computerSide);
-		
+
 		return attachments.get(att);
 	}
 

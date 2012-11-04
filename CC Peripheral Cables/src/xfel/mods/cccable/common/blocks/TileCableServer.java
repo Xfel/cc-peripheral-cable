@@ -27,14 +27,22 @@ import xfel.mods.cccable.common.routing.RoutingTableEntry;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+/**
+ * 
+ * The server-side peripheral cable class. This class contains the logic data.
+ * 
+ * @author Xfel
+ *
+ */
 public class TileCableServer extends TileCableCommon implements
 		IRoutingTableListener, IPeripheralCable, IPeripheral {
 
-	public static final ForgeDirection[] DIRS = { ForgeDirection.DOWN,
+	private static final ForgeDirection[] DIRS = { ForgeDirection.DOWN,
 			ForgeDirection.UP, ForgeDirection.NORTH, ForgeDirection.SOUTH,
 			ForgeDirection.WEST, ForgeDirection.EAST };
 
-	protected boolean connectionStateDirty = true;
+	// true if something next to us changed
+	boolean connectionStateDirty = true;
 
 	private RoutingTable routingTable;
 
@@ -44,6 +52,9 @@ public class TileCableServer extends TileCableCommon implements
 
 	private Map<IComputerAccess, String> localComputers;
 
+	/**
+	 * Default constructor
+	 */
 	public TileCableServer() {
 		routingTable = new RoutingTable();
 
@@ -67,7 +78,7 @@ public class TileCableServer extends TileCableCommon implements
 	}
 
 	/**
-	 * Immediately disconnects all local peripherals and computers
+	 * Immediately disconnects the local peripheral
 	 */
 	protected void cleanup() {
 		doDetachPeripheral();
@@ -391,8 +402,8 @@ public class TileCableServer extends TileCableCommon implements
 		}
 
 		int ctag = -1;
-		for (int i = 0; i < ItemDye.dyeColorNames.length; i++) {
-			if (ItemDye.dyeColorNames[i].equals(arguments[0])) {
+		for (int i = 0; i < PeripheralAttachment.colorNames.length; i++) {
+			if (PeripheralAttachment.colorNames[i].equals(arguments[0])) {
 				ctag = i;
 				break;
 			}

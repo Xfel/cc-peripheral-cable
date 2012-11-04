@@ -9,17 +9,48 @@
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+/**
+ * Listens to routing table changes.
+ * 
+ * @author Xfel
+ * @see RoutingTable
+ *
+ */
 public interface IRoutingTableListener {
 
+	/**
+	 * Called when a peripheral is added to the routing table
+	 * @param routingTable the routing table
+	 * @param peripheral the peripheral
+	 * @param colorTag the colorTag the peripheral is registered for.
+	 */
 	void peripheralAdded(RoutingTable routingTable, IPeripheral peripheral,
 			int colorTag);
 
+	/**
+	 * Called when a peripheral is removed from the routing table
+	 * @param routingTable the routing table
+	 * @param peripheral the peripheral
+	 * @param colorTag the colorTag the peripheral is registered for.
+	 */
 	void peripheralRemoved(RoutingTable routingTable, IPeripheral peripheral,
 			int colorTag);
 
+	/**
+	 * Called when a computer is added to the routing table
+	 * @param routingTable the routing table
+	 * @param computer the computer
+	 * @param computerSide the side the computer is connected at.
+	 */
 	void computerAdded(RoutingTable routingTable, IComputerAccess computer,
 			String computerSide);
 
+	/**
+	 * Called when a computer is removed from the routing table
+	 * @param routingTable the routing table
+	 * @param computer the computer
+	 * @param computerSide the side the computer is connected at.
+	 */
 	void computerRemoved(RoutingTable routingTable, IComputerAccess computer,
 			String computerSide);
 

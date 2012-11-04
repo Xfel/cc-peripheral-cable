@@ -8,7 +8,6 @@
 
 import org.lwjgl.opengl.GL11;
 
-import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableCommon;
 import net.minecraft.src.Block;
 import net.minecraft.src.IBlockAccess;
@@ -38,7 +37,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 				maxSize);
 		renderblocks.renderStandardBlock(block, x, y, z);
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.WEST)) {
+		if ((connectionState & ForgeDirection.WEST.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.WEST);
 			block.setBlockBounds(0.0F, minSize, minSize, minSize, maxSize,
@@ -46,7 +45,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.EAST)) {
+		if ((connectionState & ForgeDirection.EAST.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.EAST);
 			block.setBlockBounds(maxSize, minSize, minSize, 1.0F, maxSize,
@@ -54,7 +53,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.DOWN)) {
+		if ((connectionState & ForgeDirection.DOWN.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.DOWN);
 			block.setBlockBounds(minSize, 0.0F, minSize, maxSize, minSize,
@@ -62,7 +61,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.UP)) {
+		if ((connectionState & ForgeDirection.UP.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.UP);
 			block.setBlockBounds(minSize, maxSize, minSize, maxSize, 1.0F,
@@ -70,7 +69,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.NORTH)) {
+		if ((connectionState & ForgeDirection.NORTH.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.NORTH);
 			block.setBlockBounds(minSize, minSize, 0.0F, maxSize, maxSize,
@@ -78,7 +77,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
 
-		if (BlockCable.isConnected(connectionState, ForgeDirection.SOUTH)) {
+		if ((connectionState & ForgeDirection.SOUTH.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.SOUTH);
 			block.setBlockBounds(minSize, minSize, maxSize, maxSize, maxSize,

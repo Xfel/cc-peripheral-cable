@@ -23,10 +23,20 @@ import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.common.CommonProxy;
 
+/**
+ * The cable block class
+ * 
+ * @author Xfel
+ *
+ */
 public class BlockCable extends BlockContainer {
 
 	private int renderType = -1;
 
+	/**
+	 * Default constructor
+	 * @param id the block id
+	 */
 	public BlockCable(int id) {
 		super(id, Material.glass);
 		setBlockName("cable.peripheral");
@@ -47,6 +57,10 @@ public class BlockCable extends BlockContainer {
 		return renderType;
 	}
 
+	/**
+	 * Set the type of render function that is called for this block. This is called by the client proxy.
+	 * @param renderType the render type id
+	 */
 	public void setRenderType(int renderType) {
 		this.renderType = renderType;
 	}
@@ -113,10 +127,6 @@ public class BlockCable extends BlockContainer {
 		return false;
 	}
 
-	public static boolean isConnected(int connectionState, ForgeDirection dir) {
-		return (connectionState & dir.flag) != 0;
-	}
-
 	public int getBlockTexture(IBlockAccess iba, int x, int y, int z, int side) {
 		TileEntity te = iba.getBlockTileEntity(x, y, z);
 
@@ -144,7 +154,7 @@ public class BlockCable extends BlockContainer {
 		if (te instanceof TileCableCommon) {
 			int connections = ((TileCableCommon) te).getConnectionState();
 
-			if (isConnected(connections, ForgeDirection.WEST)) {
+			if ((connections & ForgeDirection.WEST.flag) != 0) {
 				setBlockBounds(0.0F, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -154,7 +164,7 @@ public class BlockCable extends BlockContainer {
 				}
 			}
 
-			if (isConnected(connections, ForgeDirection.EAST)) {
+			if ((connections & ForgeDirection.EAST.flag) != 0) {
 				setBlockBounds(0.25f, 0.25f, 0.25f, 1.0F, 0.75f, 0.75f);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -164,7 +174,7 @@ public class BlockCable extends BlockContainer {
 				}
 			}
 
-			if (isConnected(connections, ForgeDirection.DOWN)) {
+			if ((connections & ForgeDirection.DOWN.flag) != 0) {
 				setBlockBounds(0.25f, 0.0F, 0.25f, 0.75f, 0.75f, 0.75f);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -174,7 +184,7 @@ public class BlockCable extends BlockContainer {
 				}
 			}
 
-			if (isConnected(connections, ForgeDirection.UP)) {
+			if ((connections & ForgeDirection.UP.flag) != 0) {
 				setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 1.0F, 0.75f);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -184,7 +194,7 @@ public class BlockCable extends BlockContainer {
 				}
 			}
 
-			if (isConnected(connections, ForgeDirection.NORTH)) {
+			if ((connections & ForgeDirection.NORTH.flag) != 0) {
 				setBlockBounds(0.25f, 0.25f, 0.0F, 0.75f, 0.75f, 0.75f);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -194,7 +204,7 @@ public class BlockCable extends BlockContainer {
 				}
 			}
 
-			if (isConnected(connections, ForgeDirection.SOUTH)) {
+			if ((connections & ForgeDirection.SOUTH.flag) != 0) {
 				setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 1.0F);
 				AxisAlignedBB part = super.getCollisionBoundingBoxFromPool(
 						world, x, y, z);
@@ -216,22 +226,22 @@ public class BlockCable extends BlockContainer {
 		if (te instanceof TileCableCommon) {
 			int connections = ((TileCableCommon) te).getConnectionState();
 
-			if (isConnected(connections, ForgeDirection.WEST))
+			if ((connections & ForgeDirection.WEST.flag) != 0)
 				xMin = 0.0F;
 
-			if (isConnected(connections, ForgeDirection.EAST))
+			if ((connections & ForgeDirection.EAST.flag) != 0)
 				xMax = 1.0F;
 
-			if (isConnected(connections, ForgeDirection.DOWN))
+			if ((connections & ForgeDirection.DOWN.flag) != 0)
 				yMin = 0.0F;
 
-			if (isConnected(connections, ForgeDirection.UP))
+			if ((connections & ForgeDirection.UP.flag) != 0)
 				yMax = 1.0F;
 
-			if (isConnected(connections, ForgeDirection.NORTH))
+			if ((connections & ForgeDirection.NORTH.flag) != 0)
 				zMin = 0.0F;
 
-			if (isConnected(connections, ForgeDirection.SOUTH))
+			if ((connections & ForgeDirection.SOUTH.flag) != 0)
 				zMax = 1.0F;
 		}
 

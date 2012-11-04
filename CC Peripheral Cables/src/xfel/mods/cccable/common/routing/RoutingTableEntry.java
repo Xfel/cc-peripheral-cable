@@ -4,6 +4,12 @@ import net.minecraftforge.common.ForgeDirection;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+/**
+ * A routing table entry
+ * 
+ * @author Xfel
+ *
+ */
 public class RoutingTableEntry {
 	ForgeDirection side = ForgeDirection.UNKNOWN;
 	int distance;
@@ -13,6 +19,7 @@ public class RoutingTableEntry {
 	private final boolean peripheral;
 	private String cside;
 
+	// constructor for updates
 	RoutingTableEntry(RoutingTableEntry incrementalTarget) {
 		this.target = incrementalTarget.target;
 		this.id = incrementalTarget.id;
@@ -23,10 +30,12 @@ public class RoutingTableEntry {
 		this.cside = incrementalTarget.cside;
 	}
 
-	// public Entry(IComputerAccess targetComputer) {
-	// this(targetComputer, null);
-	// }
-
+	/**
+	 * Creates a new computer entry.
+	 * 
+	 * @param targetComputer the computer
+	 * @param side the side relative to the computer's orientation
+	 */
 	public RoutingTableEntry(IComputerAccess targetComputer, String side) {
 		this.target = targetComputer;
 		this.id = targetComputer.getID();
@@ -34,11 +43,18 @@ public class RoutingTableEntry {
 		this.peripheral = false;
 	}
 
+	// constructor for search
 	RoutingTableEntry(int searchedID, boolean searchPeripheral) {
 		this.id = searchedID;
 		this.peripheral = searchPeripheral;
 	}
 
+	/**
+	 * Creates a new peripheral entry.
+	 * 
+	 * @param targetPeripheral the peripheral
+	 * @param colortag the color tag used as target
+	 */
 	public RoutingTableEntry(IPeripheral targetPeripheral, int colortag) {
 		this.target = targetPeripheral;
 		this.id = colortag;
@@ -59,7 +75,12 @@ public class RoutingTableEntry {
 		return this.peripheral == other.peripheral;
 	}
 
-	public String getComputerSide() {
+	/**
+	 * @return
+	 * @throws IllegalStateException 
+	 * @throws UnsupportedOperationException 
+	 */
+	public String getComputerSide() throws IllegalStateException, UnsupportedOperationException {
 		if (!isValid())
 			throw new IllegalStateException("Invalid entry");
 		if (this.peripheral) {
@@ -68,10 +89,17 @@ public class RoutingTableEntry {
 		return this.cside;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getDistance() {
 		return this.distance;
 	}
 
+	/**
+	 * Returns the entry id. For computer entries, this is the computer id. For peripehral entries, this is the color tag.
+	 * @return
+	 */
 	public int getId() {
 		return this.id;
 	}
