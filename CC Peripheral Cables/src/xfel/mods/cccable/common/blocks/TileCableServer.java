@@ -403,7 +403,7 @@ public class TileCableServer extends TileCableCommon implements
 
 		int ctag = -1;
 		for (int i = 0; i < PeripheralAttachment.colorNames.length; i++) {
-			if (PeripheralAttachment.colorNames[i].equals(arguments[0])) {
+			if (ItemDye.dyeColorNames[i].equals(arguments[0])) {
 				ctag = i;
 				break;
 			}

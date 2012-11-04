@@ -41,6 +41,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 //import xfel.mods.debug.BlockDebugPeripheral;
 //import xfel.mods.debug.ItemDumper;
 //import xfel.mods.debug.TestPeripheralCaller;
+import dan200.ComputerCraft;
 
 /**
  * Main mod class
@@ -48,7 +49,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
  * @author Xfel
  * 
  */
-@Mod(modid = "CCCable", version = PeripheralCableMod.MOD_VERSION, useMetadata = false, name = "ComputerCraft Peripheral Cables")
+@Mod(modid = "CCCable", version = PeripheralCableMod.MOD_VERSION, useMetadata = false, name = "ComputerCraft Peripheral Cables", dependencies="after:ComputerCraft")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PeripheralCableMod {
 
@@ -80,6 +81,7 @@ public class PeripheralCableMod {
 	 */
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
+		System.out.println(sideHandler);
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
 		evt.getModMetadata().version = MOD_VERSION;
 
@@ -124,6 +126,9 @@ public class PeripheralCableMod {
 	 */
 	@PostInit
 	public void postInit(FMLPostInitializationEvent evt) {
+		// set the creative tab...
+		cableBlock.setCreativeTab(ComputerCraft.ccTab);
+		
 		// inject the file into rom
 
 		File apiLoc = new File(minecraftDirectory,

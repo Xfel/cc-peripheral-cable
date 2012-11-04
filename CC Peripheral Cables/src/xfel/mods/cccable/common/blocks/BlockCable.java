@@ -9,6 +9,8 @@ package xfel.mods.cccable.common.blocks;
 
 import java.util.List;
 
+import dan200.ComputerCraft;
+
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockContainer;
 import net.minecraft.src.CreativeTabs;
@@ -41,7 +43,7 @@ public class BlockCable extends BlockContainer {
 		super(id, Material.glass);
 		setBlockName("cable.peripheral");
 		setTextureFile(CommonProxy.BLOCK_TEXTURE);
-		setCreativeTab(CreativeTabs.tabRedstone);
+//		setCreativeTab(ComputerCraft.ccTab);
 	}
 
 	@Override
@@ -74,6 +76,8 @@ public class BlockCable extends BlockContainer {
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
+	
+	
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z,

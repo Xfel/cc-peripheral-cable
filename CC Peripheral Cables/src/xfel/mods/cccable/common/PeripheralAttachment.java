@@ -246,7 +246,7 @@ public class PeripheralAttachment implements IComputerAccess {
 	public static String getVirtualSide(String side, int colorTag) {
 		StringBuilder sb = new StringBuilder(side);
 		sb.append(':');
-		sb.append(colorNames[colorTag]);
+		sb.append(ItemDye.dyeColorNames[colorTag]);
 		return sb.toString();
 	}
 
