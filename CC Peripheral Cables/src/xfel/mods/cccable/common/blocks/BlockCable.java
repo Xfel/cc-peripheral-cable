@@ -7,6 +7,8 @@
  */
 package xfel.mods.cccable.common.blocks;
 
+import ic2.api.IPaintableBlock;
+
 import java.util.List;
 
 import dan200.ComputerCraft;
@@ -31,7 +33,7 @@ import xfel.mods.cccable.common.CommonProxy;
  * @author Xfel
  *
  */
-public class BlockCable extends BlockContainer {
+public class BlockCable extends BlockContainer implements IPaintableBlock{
 
 	private int renderType = -1;
 
@@ -140,6 +142,19 @@ public class BlockCable extends BlockContainer {
 			return tpc.getColorTag() + 1;
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean colorBlock(World world, int x, int y, int z, int color) {
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+
+		if (te instanceof TileCableCommon) {
+			TileCableCommon tpc = (TileCableCommon) te;
+			
+			tpc.setColorTag(color);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
