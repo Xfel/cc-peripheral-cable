@@ -71,7 +71,7 @@ public class TileCableServer extends TileCableCommon implements
 			updateConnections();
 			connectionStateDirty = false;
 
-			worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 		updateRoutingTable();
 		// System.out.println(routingTable);

@@ -54,7 +54,7 @@ public class TileCableCommon extends TileEntity {
 		cleanup();
 		this.colorTag = colorTag;
 
-		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord,
 				PeripheralCableMod.cableBlock.blockID);
 	}
@@ -97,7 +97,7 @@ public class TileCableCommon extends TileEntity {
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
 		colorTag = pkt.customParam1.getByte("col");
 		connectionState = pkt.customParam1.getByte("net");
-		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 }
