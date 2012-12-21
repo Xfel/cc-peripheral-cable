@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.minecraft.item.ItemDye;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.api.ICableConnectable;
@@ -27,6 +28,7 @@ import xfel.mods.cccable.common.routing.IRoutingTableListener;
 import xfel.mods.cccable.common.routing.RoutingTable;
 import xfel.mods.cccable.common.routing.RoutingTableEntry;
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.IPeripheral;
 
 /**
@@ -34,7 +36,7 @@ import dan200.computer.api.IPeripheral;
  * The server-side peripheral cable class. This class contains the logic data.
  * 
  * @author Xfel
- *
+ * 
  */
 public class TileCableServer extends TileCableCommon implements
 		IRoutingTableListener, IPeripheralCable, IPeripheral {
@@ -65,6 +67,10 @@ public class TileCableServer extends TileCableCommon implements
 
 	@Override
 	public void updateEntity() {
+		if (localPeripheral instanceof IHostedPeripheral) {
+			IHostedPeripheral hp = (IHostedPeripheral) localPeripheral;
+			hp.update();
+		}
 		if (connectionStateDirty) {
 			updateConnections();
 			connectionStateDirty = false;
@@ -118,23 +124,28 @@ public class TileCableServer extends TileCableCommon implements
 					adjacentCables.put(dir, cable);
 					connectionState |= dir.flag;
 				}
-			} else if (colorTag != -1 && newPeripheral == null
-					&& te instanceof IPeripheral) {
-				if (te instanceof ICableConnectable
-						&& ((ICableConnectable) te).canAttachCableToSide(dir
-								.getOpposite().ordinal())) {
-					newPeripheral = (IPeripheral) te;
-					peripheralSide = dir;
+			} else {
+				IPeripheral tilePeripheral = PeripheralCableMod
+						.getPeripheral(te);
+				if (colorTag != -1 && newPeripheral == null
+						&& tilePeripheral != null) {
+					if (tilePeripheral instanceof ICableConnectable
+							&& ((ICableConnectable) tilePeripheral)
+									.canAttachCableToSide(dir.getOpposite()
+											.ordinal())) {
+						newPeripheral = tilePeripheral;
+						peripheralSide = dir;
+						connectionState |= dir.flag;
+					} else if (tilePeripheral.canAttachToSide(dir.getOpposite()
+							.ordinal())) {
+						newPeripheral = tilePeripheral;
+						connectionState |= dir.flag;
+						peripheralSide = dir;
+					}
+				} else if (te.getClass().getName()
+						.equals("dan200.computer.shared.TileEntityComputer")) {
 					connectionState |= dir.flag;
-				} else if (((IPeripheral) te).canAttachToSide(dir.getOpposite()
-						.ordinal())) {
-					newPeripheral = (IPeripheral) te;
-					connectionState |= dir.flag;
-					peripheralSide = dir;
 				}
-			} else if (te.getClass().getName()
-					.equals("dan200.computer.shared.TileEntityComputer")) {
-				connectionState |= dir.flag;
 			}
 		}
 
@@ -158,6 +169,33 @@ public class TileCableServer extends TileCableCommon implements
 		routingTable.updateEntries();
 	}
 
+	private NBTTagCompound hostedPeripheralStorage;
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+
+		if (nbt.hasKey("HostedPeripheral")) {
+			hostedPeripheralStorage = nbt.getCompoundTag("HostedPeripheral");
+		} else {
+			hostedPeripheralStorage = null;
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+
+		if (localPeripheral instanceof IHostedPeripheral) {
+			hostedPeripheralStorage = new NBTTagCompound();
+			IHostedPeripheral hp = (IHostedPeripheral) localPeripheral;
+			hp.writeToNBT(hostedPeripheralStorage);
+		} else {
+			hostedPeripheralStorage = null;
+		}
+		nbt.setCompoundTag("HostedPeripheral", hostedPeripheralStorage);
+	}
+
 	private void doAttachPeripheral(ForgeDirection peripheralSide) {
 		if (localPeripheral != null) {
 			if (localPeripheral instanceof ICableConnectable) {
@@ -165,6 +203,13 @@ public class TileCableServer extends TileCableCommon implements
 						peripheralSide.getOpposite().ordinal(), colorTag);
 			}
 
+			if (localPeripheral instanceof IHostedPeripheral
+					&& hostedPeripheralStorage != null) {
+				IHostedPeripheral hp = (IHostedPeripheral) localPeripheral;
+				hp.readFromNBT(hostedPeripheralStorage);
+			}
+
+			hostedPeripheralStorage = null;
 			synchronized (routingTable) {
 				for (RoutingTableEntry entry : routingTable) {
 					if (entry.isPeripheralTarget())
@@ -177,8 +222,11 @@ public class TileCableServer extends TileCableCommon implements
 								.getMessage())) {
 							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 									"Error detaching peripheral", e);
-						}else{
-							PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+						} else {
+							PeripheralCableMod.MOD_LOGGER
+									.log(Level.INFO,
+											"Invalid computer state - not fatal, but also not nice",
+											e);
 						}
 					}
 				}
@@ -206,8 +254,11 @@ public class TileCableServer extends TileCableCommon implements
 								.getMessage())) {
 							PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 									"Error attaching peripheral", e);
-						}else{
-							PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+						} else {
+							PeripheralCableMod.MOD_LOGGER
+									.log(Level.INFO,
+											"Invalid computer state - not fatal, but also not nice",
+											e);
 						}
 					}
 				}
@@ -233,8 +284,11 @@ public class TileCableServer extends TileCableCommon implements
 						.getMessage())) {
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error attaching peripheral", e);
-				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+				} else {
+					PeripheralCableMod.MOD_LOGGER
+							.log(Level.INFO,
+									"Invalid computer state - not fatal, but also not nice",
+									e);
 				}
 			}
 		}
@@ -244,7 +298,7 @@ public class TileCableServer extends TileCableCommon implements
 	public void peripheralRemoved(RoutingTable routingTable,
 			IPeripheral peripheral, int colorTag) {
 		for (IComputerAccess computer : localComputers) {
-				try {
+			try {
 				PeripheralAttachment.detachPeripheral(peripheral, colorTag,
 						computer);
 			} catch (Exception e) {
@@ -252,8 +306,11 @@ public class TileCableServer extends TileCableCommon implements
 						.getMessage())) {
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error detaching peripheral", e);
-				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+				} else {
+					PeripheralCableMod.MOD_LOGGER
+							.log(Level.INFO,
+									"Invalid computer state - not fatal, but also not nice",
+									e);
 				}
 			}
 		}
@@ -271,8 +328,11 @@ public class TileCableServer extends TileCableCommon implements
 						.getMessage())) {
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error attaching peripheral", e);
-				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+				} else {
+					PeripheralCableMod.MOD_LOGGER
+							.log(Level.INFO,
+									"Invalid computer state - not fatal, but also not nice",
+									e);
 				}
 			}
 		}
@@ -290,8 +350,11 @@ public class TileCableServer extends TileCableCommon implements
 						.getMessage())) {
 					PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 							"Error detaching peripheral", e);
-				}else{
-					PeripheralCableMod.MOD_LOGGER.log(Level.INFO, "Invalid computer state - not fatal, but also not nice", e);
+				} else {
+					PeripheralCableMod.MOD_LOGGER
+							.log(Level.INFO,
+									"Invalid computer state - not fatal, but also not nice",
+									e);
 				}
 			}
 		}
