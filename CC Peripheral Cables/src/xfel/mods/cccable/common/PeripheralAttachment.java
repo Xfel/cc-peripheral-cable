@@ -97,7 +97,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		attached = true;
 
 		peripheral.attach(computer);
-		computer.queueEvent("peripheral_attach", new Object[] { virtualSide });
+		computer.queueEvent("peripheral", new Object[] { virtualSide });
 	}
 
 	// does the detach op

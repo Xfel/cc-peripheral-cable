@@ -2,7 +2,7 @@
 <project name="cccable" basedir=".">
    
 	<!-- environment properties -->
-	<property name="mcp.dir" location="${workspace.dir}/../mcp" />
+	<property name="mcp.dir" location="${workspace.dir}/../forge-1.4.6/mcp" />
 	<property name="mcp.source.dir" location="${mcp.dir}/src/minecraft" />
     <property name="mcp.source.base.dir" location="${mcp.dir}/src_work/minecraft" />
 	<property name="mcp.reobf.dir" location="${mcp.dir}/reobf/minecraft" />
