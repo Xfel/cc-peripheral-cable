@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import net.minecraft.src.ItemDye;
+import net.minecraft.item.ItemDye;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -30,8 +30,6 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	private IComputerAccess computer;
 
-	private String cside;
-
 	private HashSet<String> myMounts;
 
 	private boolean attached;
@@ -40,13 +38,16 @@ public class PeripheralAttachment implements IComputerAccess {
 	private String[] methods;
 	private String type;
 
+	private String virtualSide;
+
 	PeripheralAttachment(IPeripheral peripheral, int colorTag,
-			IComputerAccess computer, String cside) {
+			IComputerAccess computer) {
 		super();
 		this.peripheral = peripheral;
 		this.colorTag = colorTag;
 		this.computer = computer;
-		this.cside = cside;
+		this.virtualSide = getVirtualSide(computer.getAttachmentSide(),
+				colorTag);
 	}
 
 	@Override
@@ -56,7 +57,6 @@ public class PeripheralAttachment implements IComputerAccess {
 		result = prime * result + colorTag;
 		result = prime * result
 				+ ((computer == null) ? 0 : System.identityHashCode(computer));
-		result = prime * result + ((cside == null) ? 0 : cside.hashCode());
 		result = prime * result
 				+ ((peripheral == null) ? 0 : peripheral.hashCode());
 		return result;
@@ -74,11 +74,6 @@ public class PeripheralAttachment implements IComputerAccess {
 		if (colorTag != other.colorTag)
 			if (computer != other.computer)
 				return false;
-		if (cside == null) {
-			if (other.cside != null)
-				return false;
-		} else if (!cside.equals(other.cside))
-			return false;
 		if (peripheral == null) {
 			if (other.peripheral != null)
 				return false;
@@ -101,9 +96,8 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = new HashSet<String>();
 		attached = true;
 
-		peripheral.attach(computer, getVirtualSide(cside, colorTag));
-		computer.queueEvent("peripheral_attach",
-				new Object[] { getVirtualSide(cside, colorTag) });
+		peripheral.attach(computer);
+		computer.queueEvent("peripheral_attach", new Object[] { virtualSide });
 	}
 
 	// does the detach op
@@ -118,8 +112,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = null;
 		attached = false;
 
-		computer.queueEvent("peripheral_detach",
-				new Object[] { getVirtualSide(cside, colorTag) });
+		computer.queueEvent("peripheral_detach", new Object[] { virtualSide });
 	}
 
 	public int createNewSaveDir(String subPath) {
@@ -130,33 +123,12 @@ public class PeripheralAttachment implements IComputerAccess {
 	}
 
 	public String mountSaveDir(String desiredLocation, String subPath, int id,
-			boolean readOnly) {
-		if (!attached) {
-			throw new RuntimeException("You are not attached to this Computer");
-		}
-		String dir = computer.mountSaveDir(desiredLocation, subPath, id,
-				readOnly);
-		myMounts.add(dir);
-		return dir;
-	}
-
-	public String mountSaveDir(String desiredLocation, String subPath, int id,
 			boolean readOnly, long spaceLimit) {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
 		}
 		String dir = computer.mountSaveDir(desiredLocation, subPath, id,
 				readOnly, spaceLimit);
-		myMounts.add(dir);
-		return dir;
-	}
-
-	public String mountFixedDir(String desiredLocation, String path,
-			boolean readOnly) {
-		if (!attached) {
-			throw new RuntimeException("You are not attached to this Computer");
-		}
-		String dir = computer.mountFixedDir(desiredLocation, path, readOnly);
 		myMounts.add(dir);
 		return dir;
 	}
@@ -253,9 +225,9 @@ public class PeripheralAttachment implements IComputerAccess {
 	private static HashMap<PeripheralAttachment, PeripheralAttachment> attachments = new HashMap<PeripheralAttachment, PeripheralAttachment>();
 
 	public static synchronized void attachPeripheral(IPeripheral peripheral,
-			int colorTag, IComputerAccess computer, String computerSide) {
+			int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
-				colorTag, computer, computerSide);
+				colorTag, computer);
 
 		if (!attachments.containsKey(att)) {
 			attachments.put(att, att);
@@ -265,9 +237,9 @@ public class PeripheralAttachment implements IComputerAccess {
 	}
 
 	public static synchronized void detachPeripheral(IPeripheral peripheral,
-			int colorTag, IComputerAccess computer, String computerSide) {
+			int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
-				colorTag, computer, computerSide);
+				colorTag, computer);
 
 		if (attachments.containsKey(att)) {
 			attachments.remove(att).detach();
@@ -275,10 +247,9 @@ public class PeripheralAttachment implements IComputerAccess {
 	}
 
 	public static synchronized PeripheralAttachment getComputerWrapper(
-			IPeripheral peripheral, int colorTag, IComputerAccess computer,
-			String computerSide) {
+			IPeripheral peripheral, int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
-				colorTag, computer, computerSide);
+				colorTag, computer);
 
 		return attachments.get(att);
 	}
@@ -293,10 +264,15 @@ public class PeripheralAttachment implements IComputerAccess {
 		builder.append(", computer=");
 		builder.append(computer.getID());
 		builder.append(", cside=");
-		builder.append(cside);
+		builder.append(computer.getAttachmentSide());
 		builder.append(", methods=");
 		builder.append(Arrays.toString(methods));
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public String getAttachmentSide() {
+		return virtualSide;
 	}
 }

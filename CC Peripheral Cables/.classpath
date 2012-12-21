@@ -9,6 +9,5 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft/jars/bin/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/mcmoddev/mcp/lib/ComputerCraft.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

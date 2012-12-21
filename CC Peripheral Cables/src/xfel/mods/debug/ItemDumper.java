@@ -1,18 +1,12 @@
 package xfel.mods.debug;
 
-import java.util.Arrays;
-
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
 
 public class ItemDumper extends Item{
 

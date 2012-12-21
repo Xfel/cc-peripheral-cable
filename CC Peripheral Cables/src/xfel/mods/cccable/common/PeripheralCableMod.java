@@ -17,9 +17,10 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.minecraft.src.CraftingManager;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.Configuration;
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
@@ -41,7 +42,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 //import xfel.mods.debug.BlockDebugPeripheral;
 //import xfel.mods.debug.ItemDumper;
 //import xfel.mods.debug.TestPeripheralCaller;
-import dan200.ComputerCraft;
+import dan200.computer.api.ComputerCraftAPI;
 
 /**
  * Main mod class
@@ -49,7 +50,7 @@ import dan200.ComputerCraft;
  * @author Xfel
  * 
  */
-@Mod(modid = "CCCable", version = PeripheralCableMod.MOD_VERSION, useMetadata = false, name = "ComputerCraft Peripheral Cables", dependencies="after:ComputerCraft")
+@Mod(modid = "CCCable", useMetadata = false, name = "ComputerCraft Peripheral Cables", dependencies="after:ComputerCraft")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PeripheralCableMod {
 
@@ -59,8 +60,6 @@ public class PeripheralCableMod {
 		MOD_LOGGER = Logger.getLogger("CCCable");
 		MOD_LOGGER.setParent(FMLLog.getLogger());
 	}
-
-	static final String MOD_VERSION = "@mod.version@";
 
 	@SidedProxy(clientSide = "xfel.mods.cccable.client.ClientProxy", serverSide = "xfel.mods.cccable.common.CommonProxy")
 	public static CommonProxy sideHandler;
@@ -83,7 +82,6 @@ public class PeripheralCableMod {
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		System.out.println(sideHandler);
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
-		evt.getModMetadata().version = MOD_VERSION;
 
 		// compability until @Block is working
 		// if (cableBlock == null) {
@@ -106,9 +104,9 @@ public class PeripheralCableMod {
 	public void init(FMLInitializationEvent evt) {
 
 		LanguageRegistry.addName(cableBlock, "Peripheral Cable");
-		CraftingManager.getInstance().addRecipe(new ItemStack(cableBlock, 6),
+		CraftingManager.getInstance().func_92051_a(new ItemStack(cableBlock, 6),
 				"SRS", "RIR", "SRS", 'R', Item.redstone, 'S',
-				net.minecraft.src.Block.stone, 'I', Item.ingotIron);
+				Block.stone, 'I', Item.ingotIron);
 
 		sideHandler.initSide();
 
@@ -127,7 +125,7 @@ public class PeripheralCableMod {
 	@PostInit
 	public void postInit(FMLPostInitializationEvent evt) {
 		// set the creative tab...
-		cableBlock.setCreativeTab(ComputerCraft.ccTab);
+		cableBlock.setCreativeTab(ComputerCraftAPI.getCreativeTab());
 		
 		// inject the file into rom
 
@@ -161,7 +159,7 @@ public class PeripheralCableMod {
 				String version = firstline.substring(vmIndex + 1);
 
 				MOD_LOGGER.log(Level.INFO, "Existing peripheral api file found, has version "+version);
-				if (version.compareTo(MOD_VERSION) >= 0) {
+				if (version.compareTo(metadata.version) >= 0) {
 					return;
 				}
 			}
@@ -172,7 +170,7 @@ public class PeripheralCableMod {
 			}
 		}
 
-		MOD_LOGGER.log(Level.INFO, "Injecting peripheral api file with version "+MOD_VERSION);
+		MOD_LOGGER.log(Level.INFO, "Injecting peripheral api file with version "+metadata.version);
 		InputStream fileSource = getClass().getResourceAsStream(
 				"/lua/peripheralAPI.lua");
 		OutputStream fos = null;
@@ -180,7 +178,7 @@ public class PeripheralCableMod {
 			fos = new FileOutputStream(apiLoc);
 
 			fos.write("-- v".getBytes());
-			fos.write(MOD_VERSION.getBytes());
+			fos.write(metadata.version.getBytes());
 			fos.write('\n');
 
 			byte[] b = new byte[4096];

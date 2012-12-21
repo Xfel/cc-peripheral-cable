@@ -1,17 +1,16 @@
 package xfel.mods.debug;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.network.packet.Packet3Chat;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.BlockContainer;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.Material;
-import net.minecraft.src.Packet3Chat;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
 
 public class BlockDebugPeripheral extends BlockContainer {
 
@@ -47,8 +46,8 @@ public class BlockDebugPeripheral extends BlockContainer {
 		}
 
 		@Override
-		public void attach(IComputerAccess computer, String computerSide) {
-			System.out.printf("Computer %d attached on side %s%n",computer.getID(),computerSide);
+		public void attach(IComputerAccess computer) {
+			System.out.printf("Computer %d attached on side %s%n",computer.getID(),computer.getAttachmentSide());
 		}
 
 		@Override

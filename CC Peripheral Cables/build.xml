@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="cccable" basedir=".">
-
-
+   
 	<!-- environment properties -->
 	<property name="mcp.dir" location="${workspace.dir}/../mcp" />
 	<property name="mcp.source.dir" location="${mcp.dir}/src/minecraft" />
@@ -16,7 +15,7 @@
 
 	<!-- mod properties -->
 	<property name="mod.id" value="${ant.project.name}" />
-	<property name="mod.version" value="1.2.1" />
+	<property name="mod.version" value="1.3.0" />
 	<property name="mod.api.files" value="xfel/mods/cccable/api/**" />
 
 	<target name="clean">

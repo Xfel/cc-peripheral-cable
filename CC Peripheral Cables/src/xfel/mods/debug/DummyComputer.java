@@ -11,19 +11,7 @@ public class DummyComputer implements IComputerAccess {
 
 	@Override
 	public String mountSaveDir(String desiredLocation, String subPath, int id,
-			boolean readOnly) {
-		return desiredLocation;
-	}
-
-	@Override
-	public String mountSaveDir(String desiredLocation, String subPath, int id,
 			boolean readOnly, long spaceLimit) {
-		return desiredLocation;
-	}
-
-	@Override
-	public String mountFixedDir(String desiredLocation, String path,
-			boolean readOnly) {
 		return desiredLocation;
 	}
 
@@ -51,6 +39,11 @@ public class DummyComputer implements IComputerAccess {
 	@Override
 	public void queueEvent(String event, Object[] arguments) {
 		System.out.println("Event: "+event);
+	}
+
+	@Override
+	public String getAttachmentSide() {
+		return "virtual";
 	}
 
 }

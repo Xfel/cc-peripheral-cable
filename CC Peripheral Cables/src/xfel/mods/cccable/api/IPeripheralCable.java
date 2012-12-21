@@ -65,13 +65,4 @@ public interface IPeripheralCable {
 	 */
 	IComputerAccess[] getComputers();
 
-	/**
-	 * Returns the side a specific computer is attached on.
-	 * 
-	 * @param computer
-	 *            an attached computer
-	 * @return the attached side
-	 */
-	String getComputerSide(IComputerAccess computer);
-
 }

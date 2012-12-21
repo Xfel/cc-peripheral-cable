@@ -17,7 +17,6 @@ public class RoutingTableEntry {
 	private Object target;
 	private final int id;
 	private final boolean peripheral;
-	private String cside;
 
 	// constructor for updates
 	RoutingTableEntry(RoutingTableEntry incrementalTarget) {
@@ -26,8 +25,6 @@ public class RoutingTableEntry {
 		this.peripheral = incrementalTarget.peripheral;
 
 		this.distance = incrementalTarget.distance + 1;
-
-		this.cside = incrementalTarget.cside;
 	}
 
 	/**
@@ -36,10 +33,9 @@ public class RoutingTableEntry {
 	 * @param targetComputer the computer
 	 * @param side the side relative to the computer's orientation
 	 */
-	public RoutingTableEntry(IComputerAccess targetComputer, String side) {
+	public RoutingTableEntry(IComputerAccess targetComputer) {
 		this.target = targetComputer;
 		this.id = targetComputer.getID();
-		this.cside = side;
 		this.peripheral = false;
 	}
 
@@ -75,20 +71,7 @@ public class RoutingTableEntry {
 		return this.peripheral == other.peripheral;
 	}
 
-	/**
-	 * @return
-	 * @throws IllegalStateException 
-	 * @throws UnsupportedOperationException 
-	 */
-	public String getComputerSide() throws IllegalStateException, UnsupportedOperationException {
-		if (!isValid())
-			throw new IllegalStateException("Invalid entry");
-		if (this.peripheral) {
-			throw new UnsupportedOperationException("Target is not a computer");
-		}
-		return this.cside;
-	}
-
+	
 	/**
 	 * @return
 	 */

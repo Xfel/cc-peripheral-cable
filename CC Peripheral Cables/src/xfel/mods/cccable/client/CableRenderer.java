@@ -6,15 +6,16 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.cccable.client;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
 
 import xfel.mods.cccable.common.blocks.TileCableCommon;
-import net.minecraft.src.Block;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.RenderBlocks;
-import net.minecraft.src.Tessellator;
-import net.minecraft.src.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 /**
@@ -33,14 +34,14 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 
 		// state.currentTextureIndex =
 		// state.textureMatrix.getTextureIndex(ForgeDirection.UNKNOWN);
-		renderblocks.func_83019_b(minSize, minSize, minSize, maxSize, maxSize,
+		renderblocks.setCustomBlockBounds(minSize, minSize, minSize, maxSize, maxSize,
 				maxSize);
 		renderblocks.renderStandardBlock(block, x, y, z);
 
 		if ((connectionState & ForgeDirection.WEST.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.WEST);
-			renderblocks.func_83019_b(0.0F, minSize, minSize, minSize, maxSize,
+			renderblocks.setCustomBlockBounds(0.0F, minSize, minSize, minSize, maxSize,
 					maxSize);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
@@ -48,7 +49,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 		if ((connectionState & ForgeDirection.EAST.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.EAST);
-			renderblocks.func_83019_b(maxSize, minSize, minSize, 1.0F, maxSize,
+			renderblocks.setCustomBlockBounds(maxSize, minSize, minSize, 1.0F, maxSize,
 					maxSize);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
@@ -58,7 +59,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 			// state.textureMatrix.getTextureIndex(ForgeDirection.DOWN);
 //			block.setBlockBounds(minSize, 0.0F, minSize, maxSize, minSize,
 //					maxSize);
-			renderblocks.func_83019_b(minSize, 0.0F, minSize, maxSize, minSize,
+			renderblocks.setCustomBlockBounds(minSize, 0.0F, minSize, maxSize, minSize,
 					maxSize);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
@@ -66,7 +67,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 		if ((connectionState & ForgeDirection.UP.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.UP);
-			renderblocks.func_83019_b(minSize, maxSize, minSize, maxSize, 1.0F,
+			renderblocks.setCustomBlockBounds(minSize, maxSize, minSize, maxSize, 1.0F,
 					maxSize);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
@@ -74,7 +75,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 		if ((connectionState & ForgeDirection.NORTH.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.NORTH);
-			renderblocks.func_83019_b(minSize, minSize, 0.0F, maxSize, maxSize,
+			renderblocks.setCustomBlockBounds(minSize, minSize, 0.0F, maxSize, maxSize,
 					minSize);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
@@ -82,11 +83,11 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 		if ((connectionState & ForgeDirection.SOUTH.flag) != 0) {
 			// state.currentTextureIndex =
 			// state.textureMatrix.getTextureIndex(ForgeDirection.SOUTH);
-			renderblocks.func_83019_b(minSize, minSize, maxSize, maxSize, maxSize,
+			renderblocks.setCustomBlockBounds(minSize, minSize, maxSize, maxSize, maxSize,
 					1.0F);
 			renderblocks.renderStandardBlock(block, x, y, z);
 		}
-		renderblocks.func_83017_b();
+		renderblocks.resetCustomBlockBounds();
 		
 	}
 
@@ -98,7 +99,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 
 		int textureID = 0;
 
-		renderer.func_83019_b(0.25f, 0.0F, 0.25f, 0.75f, 1.0F, 0.75f);
+		renderer.setCustomBlockBounds(0.25f, 0.0F, 0.25f, 0.75f, 1.0F, 0.75f);
 		
 		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
 		tessellator.startDrawingQuads();
@@ -126,7 +127,7 @@ public class CableRenderer implements ISimpleBlockRenderingHandler {
 		renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, textureID);
 		tessellator.draw();
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-		renderer.func_83017_b();
+		renderer.resetCustomBlockBounds();
 	}
 
 	@Override

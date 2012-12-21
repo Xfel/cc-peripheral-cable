@@ -72,8 +72,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 				listener.peripheralAdded(this, entry.getTargetPeripheral(),
 						entry.getId());
 			} else {
-				listener.computerAdded(this, entry.getTargetComputer(),
-						entry.getComputerSide());
+				listener.computerAdded(this, entry.getTargetComputer());
 			}
 		}
 	}
@@ -95,8 +94,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 				listener.peripheralRemoved(this, entry.getTargetPeripheral(),
 						entry.getId());
 			} else {
-				listener.computerRemoved(this, entry.getTargetComputer(),
-						entry.getComputerSide());
+				listener.computerRemoved(this, entry.getTargetComputer());
 			}
 		}
 	}
@@ -111,11 +109,11 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	 */
 	public synchronized void recieveUpdate(RoutingTable updater,
 			ForgeDirection side) {
-		if(updater==this){
+		if (updater == this) {
 			System.err.println(side);
 			throw new IllegalArgumentException("Can't update with yourself");
 		}
-		
+
 		synchronized (updater) {
 			Iterator<RoutingTableEntry> it = updater.iterator();
 			while (it.hasNext()) {
@@ -142,8 +140,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 					} else {
 						if (listener != null) {
 							listener.computerAdded(this,
-									localEntry.getTargetComputer(),
-									localEntry.getComputerSide());
+									localEntry.getTargetComputer());
 						}
 					}
 				} else if (localEntry.distance > 0
@@ -173,7 +170,6 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 			if (entry.lifetime >= 0) {
 				entry.lifetime++;
 				if (entry.lifetime > 3) {
-					 System.out.println("Lifetime expired: "+entry);
 					it.remove();
 
 					if (listener != null) {
@@ -182,8 +178,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 									entry.getTargetPeripheral(), entry.getId());
 						} else {
 							listener.computerRemoved(this,
-									entry.getTargetComputer(),
-									entry.getComputerSide());
+									entry.getTargetComputer());
 						}
 					}
 				}

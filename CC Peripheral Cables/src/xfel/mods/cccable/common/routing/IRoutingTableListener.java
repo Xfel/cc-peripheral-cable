@@ -40,18 +40,14 @@ public interface IRoutingTableListener {
 	 * Called when a computer is added to the routing table
 	 * @param routingTable the routing table
 	 * @param computer the computer
-	 * @param computerSide the side the computer is connected at.
 	 */
-	void computerAdded(RoutingTable routingTable, IComputerAccess computer,
-			String computerSide);
+	void computerAdded(RoutingTable routingTable, IComputerAccess computer);
 
 	/**
 	 * Called when a computer is removed from the routing table
 	 * @param routingTable the routing table
 	 * @param computer the computer
-	 * @param computerSide the side the computer is connected at.
 	 */
-	void computerRemoved(RoutingTable routingTable, IComputerAccess computer,
-			String computerSide);
+	void computerRemoved(RoutingTable routingTable, IComputerAccess computer);
 
 }

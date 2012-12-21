@@ -2,16 +2,15 @@ package xfel.mods.debug;
 
 import java.util.Arrays;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
 
 public class TestPeripheralCaller extends Item {
 
@@ -46,7 +45,7 @@ public class TestPeripheralCaller extends Item {
 			}
 			if (mi != -1) {
 				IComputerAccess dummyComputer = new DummyComputer();
-				peri.attach(dummyComputer, "right");
+				peri.attach(dummyComputer);
 				try {
 					System.out.println(Arrays.toString(peri.callMethod(
 							dummyComputer, mi, ARGS)));

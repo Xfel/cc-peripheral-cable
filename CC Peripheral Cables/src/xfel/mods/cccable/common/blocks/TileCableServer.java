@@ -10,12 +10,14 @@ package xfel.mods.cccable.common.blocks;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
-import net.minecraft.src.ItemDye;
-import net.minecraft.src.TileEntity;
+import net.minecraft.item.ItemDye;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.api.ICableConnectable;
 import xfel.mods.cccable.api.IPeripheralCable;
@@ -37,10 +39,6 @@ import dan200.computer.api.IPeripheral;
 public class TileCableServer extends TileCableCommon implements
 		IRoutingTableListener, IPeripheralCable, IPeripheral {
 
-	private static final ForgeDirection[] DIRS = { ForgeDirection.DOWN,
-			ForgeDirection.UP, ForgeDirection.NORTH, ForgeDirection.SOUTH,
-			ForgeDirection.WEST, ForgeDirection.EAST };
-
 	// true if something next to us changed
 	boolean connectionStateDirty = true;
 
@@ -50,7 +48,7 @@ public class TileCableServer extends TileCableCommon implements
 
 	private IPeripheral localPeripheral;
 
-	private Map<IComputerAccess, String> localComputers;
+	private Set<IComputerAccess> localComputers;
 
 	/**
 	 * Default constructor
@@ -62,7 +60,7 @@ public class TileCableServer extends TileCableCommon implements
 
 		adjacentCables = new EnumMap<ForgeDirection, TileCableServer>(
 				ForgeDirection.class);
-		localComputers = new HashMap<IComputerAccess, String>();
+		localComputers = new HashSet<IComputerAccess>();
 	}
 
 	@Override
@@ -98,7 +96,7 @@ public class TileCableServer extends TileCableCommon implements
 		IPeripheral newPeripheral = null;
 		ForgeDirection peripheralSide = ForgeDirection.UNKNOWN;
 
-		for (ForgeDirection dir : DIRS) {
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int tx = xCoord + dir.offsetX;
 			int ty = yCoord + dir.offsetY;
 			int tz = zCoord + dir.offsetZ;
@@ -173,8 +171,7 @@ public class TileCableServer extends TileCableCommon implements
 						continue;
 					try {
 						PeripheralAttachment.attachPeripheral(localPeripheral,
-								colorTag, entry.getTargetComputer(),
-								entry.getComputerSide());
+								colorTag, entry.getTargetComputer());
 					} catch (Exception e) {
 						if (!"You are not attached to this Computer".equals(e
 								.getMessage())) {
@@ -203,8 +200,7 @@ public class TileCableServer extends TileCableCommon implements
 						continue;
 					try {
 						PeripheralAttachment.detachPeripheral(localPeripheral,
-								colorTag, entry.getTargetComputer(),
-								entry.getComputerSide());
+								colorTag, entry.getTargetComputer());
 					} catch (Exception e) {
 						if (!"You are not attached to this Computer".equals(e
 								.getMessage())) {
@@ -228,11 +224,10 @@ public class TileCableServer extends TileCableCommon implements
 	@Override
 	public void peripheralAdded(RoutingTable routingTable,
 			IPeripheral peripheral, int colorTag) {
-		for (Map.Entry<IComputerAccess, String> entry : localComputers
-				.entrySet()) {
+		for (IComputerAccess computer : localComputers) {
 			try {
 				PeripheralAttachment.attachPeripheral(peripheral, colorTag,
-						entry.getKey(), entry.getValue());
+						computer);
 			} catch (Exception e) {
 				if (!"You are not attached to this Computer".equals(e
 						.getMessage())) {
@@ -248,11 +243,10 @@ public class TileCableServer extends TileCableCommon implements
 	@Override
 	public void peripheralRemoved(RoutingTable routingTable,
 			IPeripheral peripheral, int colorTag) {
-		for (Map.Entry<IComputerAccess, String> entry : localComputers
-				.entrySet()) {
-			try {
+		for (IComputerAccess computer : localComputers) {
+				try {
 				PeripheralAttachment.detachPeripheral(peripheral, colorTag,
-						entry.getKey(), entry.getValue());
+						computer);
 			} catch (Exception e) {
 				if (!"You are not attached to this Computer".equals(e
 						.getMessage())) {
@@ -267,11 +261,11 @@ public class TileCableServer extends TileCableCommon implements
 
 	@Override
 	public void computerAdded(RoutingTable routingTable,
-			IComputerAccess computer, String computerSide) {
+			IComputerAccess computer) {
 		if (localPeripheral != null) {
 			try {
 				PeripheralAttachment.attachPeripheral(localPeripheral,
-						colorTag, computer, computerSide);
+						colorTag, computer);
 			} catch (Exception e) {
 				if (!"You are not attached to this Computer".equals(e
 						.getMessage())) {
@@ -286,11 +280,11 @@ public class TileCableServer extends TileCableCommon implements
 
 	@Override
 	public void computerRemoved(RoutingTable routingTable,
-			IComputerAccess computer, String computerSide) {
+			IComputerAccess computer) {
 		if (localPeripheral != null) {
 			try {
 				PeripheralAttachment.detachPeripheral(localPeripheral,
-						colorTag, computer, computerSide);
+						colorTag, computer);
 			} catch (Exception e) {
 				if (!"You are not attached to this Computer".equals(e
 						.getMessage())) {
@@ -359,21 +353,6 @@ public class TileCableServer extends TileCableCommon implements
 				.size()]);
 	}
 
-	@Override
-	public String getComputerSide(IComputerAccess computer) {
-		List<IPeripheral> result = new ArrayList<IPeripheral>(16);
-
-		for (RoutingTableEntry entry : routingTable) {
-			if (entry.isPeripheralTarget())
-				continue;
-
-			if (entry.getTargetComputer() == computer) {
-				return entry.getComputerSide();
-			}
-		}
-		return null;
-	}
-
 	/*
 	 * IPeriperal implementation
 	 */
@@ -394,7 +373,7 @@ public class TileCableServer extends TileCableCommon implements
 			Object[] arguments) throws Exception {
 
 		if (method == 4) {// list
-			return listPeripherals(localComputers.get(computer));
+			return listPeripherals(computer.getAttachmentSide());
 		}
 
 		if (arguments.length < 1 || !(arguments[0] instanceof String)) {
@@ -425,8 +404,7 @@ public class TileCableServer extends TileCableCommon implements
 			return null;
 
 		PeripheralAttachment att = PeripheralAttachment.getComputerWrapper(
-				entry.getTargetPeripheral(), ctag, computer,
-				getComputerSide(computer));
+				entry.getTargetPeripheral(), ctag, computer);
 
 		switch (method) {
 		case 1:// getType
@@ -474,8 +452,8 @@ public class TileCableServer extends TileCableCommon implements
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {
-		localComputers.put(computer, computerSide);
+	public void attach(IComputerAccess computer) {
+		localComputers.add(computer);
 
 		synchronized (routingTable) {
 			for (RoutingTableEntry entry : routingTable) {
@@ -483,29 +461,23 @@ public class TileCableServer extends TileCableCommon implements
 					continue;
 
 				PeripheralAttachment.attachPeripheral(
-						entry.getTargetPeripheral(), entry.getId(), computer,
-						computerSide);
+						entry.getTargetPeripheral(), entry.getId(), computer);
 			}
-			routingTable.addLocalEntry(new RoutingTableEntry(computer,
-					computerSide));
+			routingTable.addLocalEntry(new RoutingTableEntry(computer));
 		}
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		String computerSide = localComputers.remove(computer);
-
 		synchronized (routingTable) {
 			for (RoutingTableEntry entry : routingTable) {
 				if (!entry.isPeripheralTarget())
 					continue;
 
 				PeripheralAttachment.detachPeripheral(
-						entry.getTargetPeripheral(), entry.getId(), computer,
-						computerSide);
+						entry.getTargetPeripheral(), entry.getId(), computer);
 			}
-			routingTable.removeLocalEntry(new RoutingTableEntry(computer,
-					computerSide));
+			routingTable.removeLocalEntry(new RoutingTableEntry(computer));
 		}
 	}
 
