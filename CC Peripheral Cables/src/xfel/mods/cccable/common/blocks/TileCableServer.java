@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.cccable.api.ICableConnectable;
 import xfel.mods.cccable.api.IPeripheralCable;
+import xfel.mods.cccable.common.ComputerCraftReflector;
 import xfel.mods.cccable.common.PeripheralAttachment;
 import xfel.mods.cccable.common.PeripheralCableMod;
 import xfel.mods.cccable.common.routing.IRoutingTableListener;
@@ -116,7 +117,11 @@ public class TileCableServer extends TileCableCommon implements
 			if (te == null) {
 				continue;
 			}
-			if (te instanceof TileCableServer) {
+
+
+			if (ComputerCraftReflector.isComputer(te)) {
+				connectionState |= dir.flag;
+			}else if (te instanceof TileCableServer) {
 				TileCableServer cable = (TileCableServer) te;
 
 				if (this.colorTag == -1 || cable.colorTag == -1
@@ -124,11 +129,10 @@ public class TileCableServer extends TileCableCommon implements
 					adjacentCables.put(dir, cable);
 					connectionState |= dir.flag;
 				}
-			} else {
-				IPeripheral tilePeripheral = PeripheralCableMod
+			} else if (colorTag != -1 && newPeripheral == null){
+				IPeripheral tilePeripheral = ComputerCraftReflector
 						.getPeripheral(te);
-				if (colorTag != -1 && newPeripheral == null
-						&& tilePeripheral != null) {
+				if (tilePeripheral != null) {
 					if (tilePeripheral instanceof ICableConnectable
 							&& ((ICableConnectable) tilePeripheral)
 									.canAttachCableToSide(dir.getOpposite()
@@ -142,10 +146,7 @@ public class TileCableServer extends TileCableCommon implements
 						connectionState |= dir.flag;
 						peripheralSide = dir;
 					}
-				} else if (te.getClass().getName()
-						.equals("dan200.computer.shared.TileEntityComputer")) {
-					connectionState |= dir.flag;
-				}
+				} 
 			}
 		}
 
@@ -190,10 +191,10 @@ public class TileCableServer extends TileCableCommon implements
 			hostedPeripheralStorage = new NBTTagCompound();
 			IHostedPeripheral hp = (IHostedPeripheral) localPeripheral;
 			hp.writeToNBT(hostedPeripheralStorage);
+			nbt.setCompoundTag("HostedPeripheral", hostedPeripheralStorage);
 		} else {
 			hostedPeripheralStorage = null;
 		}
-		nbt.setCompoundTag("HostedPeripheral", hostedPeripheralStorage);
 	}
 
 	private void doAttachPeripheral(ForgeDirection peripheralSide) {
