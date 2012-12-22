@@ -21,13 +21,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableServer;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -57,6 +54,9 @@ import dan200.computer.api.ComputerCraftAPI;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PeripheralCableMod {
 
+	/**
+	 * Global logger for the mod.
+	 */
 	public static final Logger MOD_LOGGER;
 
 	static {
@@ -64,43 +64,58 @@ public class PeripheralCableMod {
 		MOD_LOGGER.setParent(FMLLog.getLogger());
 	}
 
+	/**
+	 * The sided proxy
+	 */
 	@SidedProxy(clientSide = "xfel.mods.cccable.client.ClientProxy", serverSide = "xfel.mods.cccable.common.CommonProxy")
 	public static CommonProxy sideHandler;
 
+	/**
+	 * the mod instance
+	 */
 	@Instance
 	public static PeripheralCableMod instance;
 
+	/**
+	 * The mod metadata
+	 */
 	@Metadata
 	public static ModMetadata metadata;
 
-	// @Block(name = "PeripheralCable")
+	/**
+	 * The peripheral cable block instance
+	 */
 	public static BlockCable cableBlock;
 
 	private File minecraftDirectory;
 
 	/**
 	 * Retrieves the minecraft directory (as there seems to be no other way)
+	 * Also loads the block id from config.
+	 * 
+	 * @param evt
+	 *            state event
 	 */
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		System.out.println(sideHandler);
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
 
-		// compability until @Block is working
-		// if (cableBlock == null) {
 		Configuration config = new Configuration(
 				evt.getSuggestedConfigurationFile());
 		config.load();
 
 		cableBlock = new BlockCable(config.getBlock("cable.id", 2030).getInt());
-		GameRegistry.registerBlock(cableBlock);
-		// }
+		GameRegistry.registerBlock(cableBlock, "PeripheralCable");
 
 		config.save();
 	}
 
 	/**
 	 * Registers blocks, names, tile entities and recipes
+	 * 
+	 * @param evt
+	 *            state event
 	 */
 	@Init
 	public void init(FMLInitializationEvent evt) {
@@ -123,13 +138,16 @@ public class PeripheralCableMod {
 
 	/**
 	 * Injects the new peripheral api file
+	 * 
+	 * @param evt
+	 *            state event
 	 */
 	@PostInit
 	public void postInit(FMLPostInitializationEvent evt) {
 		// set the creative tab...
 		cableBlock.setCreativeTab(ComputerCraftAPI.getCreativeTab());
 
-		// add external peripheral helper
+		// load reflection data
 		ComputerCraftReflector.initReflectionReferences();
 
 		// inject the file into rom
@@ -193,8 +211,9 @@ public class PeripheralCableMod {
 
 			byte[] b = new byte[4096];
 			int read;
-			while ((read = fileSource.read(b)) != -1)
+			while ((read = fileSource.read(b)) != -1) {
 				fos.write(b, 0, read);
+			}
 		} catch (IOException e) {
 			MOD_LOGGER.log(Level.SEVERE, "Error copying file", e);
 		} finally {

@@ -9,10 +9,11 @@ import dan200.computer.api.IPeripheralHandler;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * This class contains all sorts of reflection "hacks" used to access non-exposed computercraft functions.
+ * This class contains all sorts of reflection "hacks" used to access
+ * non-exposed computercraft functions.
  * 
  * @author Xfel
- *
+ * 
  */
 public class ComputerCraftReflector {
 
@@ -24,10 +25,11 @@ public class ComputerCraftReflector {
 	 * Returns the peripheral for the given tile entity.
 	 * 
 	 * If the tile entity implements {@link IPeripheral} itself, then it is
-	 * returned. Otherwise, this method uses the corresponding {@link IPeripheralHandler}
-	 * if available.
+	 * returned. Otherwise, this method uses the corresponding
+	 * {@link IPeripheralHandler} if available.
 	 * 
-	 * @param te the tile entity
+	 * @param te
+	 *            the tile entity
 	 * @return the peripheral or <code>null</code> if the tile is none.
 	 */
 	public static IPeripheral getPeripheral(TileEntity te) {
@@ -41,7 +43,8 @@ public class ComputerCraftReflector {
 						.invoke(null, te.getClass());
 			} catch (IllegalAccessException e) {
 				// as we did setAccessible(true), this can't happen
-				PeripheralCableMod.MOD_LOGGER.log(Level.SEVERE, "This should not happen?!?", e);
+				PeripheralCableMod.MOD_LOGGER.log(Level.SEVERE,
+						"This should not happen?!?", e);
 			} catch (InvocationTargetException e) {
 				PeripheralCableMod.MOD_LOGGER.log(Level.WARNING,
 						"Error retrieving the peripheral handler for class "
@@ -53,6 +56,7 @@ public class ComputerCraftReflector {
 		}
 		return null;
 	}
+
 	/**
 	 * Checks whether a given tile entity is a computer tile entity.
 	 * 
@@ -77,7 +81,7 @@ public class ComputerCraftReflector {
 		try {
 			class_IComputerEntity = Class
 					.forName("dan200.computer.shared.IComputerEntity");
-	
+
 			Class<?> ccc = Class.forName("dan200.ComputerCraft");
 			method_getPeripheralFromClass = ccc.getMethod(
 					"getPeripheralFromClass", Class.class);

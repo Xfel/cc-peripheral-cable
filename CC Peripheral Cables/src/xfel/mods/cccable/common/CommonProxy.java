@@ -15,6 +15,9 @@ package xfel.mods.cccable.common;
  */
 public class CommonProxy {
 
+	/**
+	 * The texture resource location.
+	 */
 	public static final String BLOCK_TEXTURE = "/terrain/cccable.png";
 
 	/**

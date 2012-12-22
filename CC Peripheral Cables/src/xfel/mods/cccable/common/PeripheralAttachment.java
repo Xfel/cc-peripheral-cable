@@ -64,21 +64,28 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		PeripheralAttachment other = (PeripheralAttachment) obj;
-		if (colorTag != other.colorTag)
-			if (computer != other.computer)
+		if (colorTag != other.colorTag) {
+			if (computer != other.computer) {
 				return false;
+			}
+		}
 		if (peripheral == null) {
-			if (other.peripheral != null)
+			if (other.peripheral != null) {
 				return false;
-		} else if (!peripheral.equals(other.peripheral))
+			}
+		} else if (!peripheral.equals(other.peripheral)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -115,6 +122,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		computer.queueEvent("peripheral_detach", new Object[] { virtualSide });
 	}
 
+	@Override
 	public int createNewSaveDir(String subPath) {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
@@ -122,6 +130,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		return computer.createNewSaveDir(subPath);
 	}
 
+	@Override
 	public String mountSaveDir(String desiredLocation, String subPath, int id,
 			boolean readOnly, long spaceLimit) {
 		if (!attached) {
@@ -133,6 +142,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		return dir;
 	}
 
+	@Override
 	public String mountFixedDir(String desiredLocation, String path,
 			boolean readOnly, long spaceLimit) {
 		if (!attached) {
@@ -144,6 +154,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		return dir;
 	}
 
+	@Override
 	public void unmount(String location) {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
@@ -154,6 +165,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		computer.unmount(location);
 	}
 
+	@Override
 	public int getID() {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
@@ -161,6 +173,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		return computer.getID();
 	}
 
+	@Override
 	public void queueEvent(String event) {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
@@ -168,6 +181,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		computer.queueEvent(event);
 	}
 
+	@Override
 	public void queueEvent(String event, Object[] arguments) {
 		if (!attached) {
 			throw new RuntimeException("You are not attached to this Computer");
@@ -179,14 +193,18 @@ public class PeripheralAttachment implements IComputerAccess {
 	 * Call a peripehral method...
 	 * 
 	 * @param methodName
+	 *            the method name
 	 * @param args
-	 * @return
+	 *            the arguments
+	 * @return the call result
 	 * @throws Exception
+	 *             if some error occurs
+	 * @see IPeripheral#callMethod(IComputerAccess, int, Object[])
 	 */
 	public Object[] call(String methodName, Object[] args) throws Exception {
 		assert (this.attached == true);
 		if (this.methodMap.containsKey(methodName)) {
-			int method = ((Integer) this.methodMap.get(methodName)).intValue();
+			int method = this.methodMap.get(methodName).intValue();
 
 			return this.peripheral.callMethod(this, method, args);
 		}
@@ -196,7 +214,7 @@ public class PeripheralAttachment implements IComputerAccess {
 	/**
 	 * Retrieve the peripheral method table.
 	 * 
-	 * @return
+	 * @return the method list (a map to be used as lua table)
 	 */
 	public Map<Integer, String> getMethods() {
 		Map<Integer, String> table = new HashMap<Integer, String>();
@@ -209,12 +227,22 @@ public class PeripheralAttachment implements IComputerAccess {
 	/**
 	 * Returns the peripheral type.
 	 * 
-	 * @return
+	 * @return the type
 	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Formats computer side and color tag into the virtual side name used in
+	 * code.
+	 * 
+	 * @param side
+	 *            the computer side the cable is attached on
+	 * @param colorTag
+	 *            the color tag the peripheral is attached on.
+	 * @return a string in the format [side]:[color name]
+	 */
 	public static String getVirtualSide(String side, int colorTag) {
 		StringBuilder sb = new StringBuilder(side);
 		sb.append(':');
@@ -224,6 +252,16 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	private static HashMap<PeripheralAttachment, PeripheralAttachment> attachments = new HashMap<PeripheralAttachment, PeripheralAttachment>();
 
+	/**
+	 * Creates a new <code>PeripheralAttachment</code> object and registers it.
+	 * 
+	 * @param peripheral
+	 *            the peripheral
+	 * @param colorTag
+	 *            the color tag
+	 * @param computer
+	 *            the computer to attach to
+	 */
 	public static synchronized void attachPeripheral(IPeripheral peripheral,
 			int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
@@ -236,6 +274,16 @@ public class PeripheralAttachment implements IComputerAccess {
 		}
 	}
 
+	/**
+	 * Detaches and removes a <code>PeripheralAttachment</code> object
+	 * 
+	 * @param peripheral
+	 *            the peripheral
+	 * @param colorTag
+	 *            the color tag
+	 * @param computer
+	 *            the computer
+	 */
 	public static synchronized void detachPeripheral(IPeripheral peripheral,
 			int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
@@ -246,6 +294,18 @@ public class PeripheralAttachment implements IComputerAccess {
 		}
 	}
 
+	/**
+	 * Looks up and retrieves a <code>PeripehralAttachment</code> object from
+	 * the table.
+	 * 
+	 * @param peripheral
+	 *            the peripheral
+	 * @param colorTag
+	 *            the color tag
+	 * @param computer
+	 *            the computer
+	 * @return the <code>PeripehralAttachment</code> object
+	 */
 	public static synchronized PeripheralAttachment getComputerWrapper(
 			IPeripheral peripheral, int colorTag, IComputerAccess computer) {
 		PeripheralAttachment att = new PeripheralAttachment(peripheral,
