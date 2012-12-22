@@ -138,7 +138,7 @@ public class PeripheralCableMod {
 
 		// add external peripheral helper
 		try {
-			Class<?> ccc = Class.forName("dan200.computer.ComputerCraft");
+			Class<?> ccc = Class.forName("dan200.ComputerCraft");
 			method_getPeripheralFromClass = ccc.getMethod(
 					"getPeripheralFromClass", Class.class);
 			if (!method_getPeripheralFromClass.isAccessible()) {
@@ -250,7 +250,7 @@ public class PeripheralCableMod {
 								+ te.getClass().getSimpleName(), e);
 			}
 			if (handler != null) {
-				return handler.getPeripheral(te);
+				return handler.getPeripheral(te);//TODO doesn't work?
 			}
 		}
 		return null;
