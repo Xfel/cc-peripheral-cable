@@ -10,17 +10,39 @@ package xfel.mods.cccable.common.routing;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
+
 import net.minecraftforge.common.ForgeDirection;
 
+/**
+ * The routing table used by the cables.
+ * 
+ * There is one instance of this for every cable tile.
+ * 
+ * 
+ * @author Xfel
+ * 
+ */
 public class RoutingTable implements Iterable<RoutingTableEntry> {
 	private HashMap<RoutingTableEntry, RoutingTableEntry> rtable;
 
 	private IRoutingTableListener listener;
 
+	/**
+	 * Default constructor
+	 */
 	public RoutingTable() {
 		this.rtable = new HashMap<RoutingTableEntry, RoutingTableEntry>();
 	}
 
+	/**
+	 * Set the listener that will be notified about entry additions/deletions
+	 * 
+	 * @param listener
+	 *            the listener object
+	 * @see IRoutingTableListener
+	 */
 	public void setRoutingTableListener(IRoutingTableListener listener) {
 		this.listener = listener;
 	}
@@ -48,10 +70,26 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 		return this.rtable.values().iterator();
 	}
 
+	/**
+	 * Finds a computer with the given id.
+	 * 
+	 * @param computerId
+	 *            the computer id
+	 * @return the {@link IComputerAccess} object or <code>null</code> if it
+	 *         can't be found
+	 */
 	public RoutingTableEntry getComputerEntry(int computerId) {
 		return this.rtable.get(new RoutingTableEntry(computerId, false));
 	}
 
+	/**
+	 * Finds a peripheral with the given colorTag.
+	 * 
+	 * @param colorTag
+	 *            the colorTag
+	 * @return the {@link IPeripheral} object or <code>null</code> if it can't
+	 *         be found
+	 */
 	public RoutingTableEntry getPeripheralEntry(int colorTag) {
 		return this.rtable.get(new RoutingTableEntry(colorTag, true));
 	}
@@ -60,6 +98,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	 * Adds a local entry whose origin is at our current position
 	 * 
 	 * @param entry
+	 *            the new local entry
 	 */
 	public synchronized void addLocalEntry(RoutingTableEntry entry) {
 		entry.distance = 0;
@@ -81,6 +120,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	 * Removes a local entry
 	 * 
 	 * @param entry
+	 *            the entry object
 	 */
 	public synchronized void removeLocalEntry(RoutingTableEntry entry) {
 		RoutingTableEntry storedEntry = this.rtable.get(entry);
@@ -117,7 +157,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 		synchronized (updater) {
 			Iterator<RoutingTableEntry> it = updater.iterator();
 			while (it.hasNext()) {
-				RoutingTableEntry remoteEntry = (RoutingTableEntry) it.next();
+				RoutingTableEntry remoteEntry = it.next();
 				RoutingTableEntry localEntry = this.rtable.get(remoteEntry);
 
 				if (remoteEntry.side == side.getOpposite()) {
@@ -160,12 +200,7 @@ public class RoutingTable implements Iterable<RoutingTableEntry> {
 	public synchronized void updateEntries() {
 		Iterator<RoutingTableEntry> it = this.rtable.values().iterator();
 		while (it.hasNext()) {
-			RoutingTableEntry entry = (RoutingTableEntry) it.next();
-
-			if (!entry.isValid()) {
-				it.remove();
-				continue;
-			}
+			RoutingTableEntry entry = it.next();
 
 			if (entry.lifetime >= 0) {
 				entry.lifetime++;

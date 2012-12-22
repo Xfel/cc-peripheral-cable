@@ -8,7 +8,7 @@ import dan200.computer.api.IPeripheral;
  * A routing table entry
  * 
  * @author Xfel
- *
+ * 
  */
 public class RoutingTableEntry {
 	ForgeDirection side = ForgeDirection.UNKNOWN;
@@ -30,8 +30,8 @@ public class RoutingTableEntry {
 	/**
 	 * Creates a new computer entry.
 	 * 
-	 * @param targetComputer the computer
-	 * @param side the side relative to the computer's orientation
+	 * @param targetComputer
+	 *            the computer
 	 */
 	public RoutingTableEntry(IComputerAccess targetComputer) {
 		this.target = targetComputer;
@@ -48,8 +48,10 @@ public class RoutingTableEntry {
 	/**
 	 * Creates a new peripheral entry.
 	 * 
-	 * @param targetPeripheral the peripheral
-	 * @param colortag the color tag used as target
+	 * @param targetPeripheral
+	 *            the peripheral
+	 * @param colortag
+	 *            the color tag used as target
 	 */
 	public RoutingTableEntry(IPeripheral targetPeripheral, int colortag) {
 		this.target = targetPeripheral;
@@ -57,13 +59,17 @@ public class RoutingTableEntry {
 		this.peripheral = true;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		RoutingTableEntry other = (RoutingTableEntry) obj;
 		if (this.id != other.id) {
 			return false;
@@ -71,44 +77,70 @@ public class RoutingTableEntry {
 		return this.peripheral == other.peripheral;
 	}
 
-	
 	/**
-	 * @return
+	 * @return the distance from the entry's origin in tiles.
 	 */
 	public int getDistance() {
 		return this.distance;
 	}
 
 	/**
-	 * Returns the entry id. For computer entries, this is the computer id. For peripehral entries, this is the color tag.
-	 * @return
+	 * Returns the entry id. For computer entries, this is the computer id. For
+	 * peripehral entries, this is the color tag.
+	 * 
+	 * @return the entry id
 	 */
 	public int getId() {
 		return this.id;
 	}
 
+	/**
+	 * Returns the side this entry was created from. It is also the direction in
+	 * which the shortest known way can be found.
+	 * 
+	 * @return the source direction or {@link ForgeDirection#UNKNOWN} if the
+	 *         entry was created here.
+	 */
 	public ForgeDirection getSide() {
 		return this.side;
 	}
 
+	/**
+	 * Returns the entry target. This can be a computer or a peripheral.
+	 * 
+	 * @return the target.
+	 * @see #isPeripheralTarget()
+	 */
 	public Object getTarget() {
-		if (!isValid())
-			throw new IllegalStateException("Invalid entry");
 		return this.target;
 	}
 
+	/**
+	 * Returns the target computer.
+	 * 
+	 * @return the target computer
+	 * @throws UnsupportedOperationException
+	 *             if the target isn't a computer.
+	 * @see #isPeripheralTarget()
+	 * @see #getTarget()
+	 */
 	public IComputerAccess getTargetComputer() {
-		if (!isValid())
-			throw new IllegalStateException("Invalid entry");
 		if (this.peripheral) {
 			throw new UnsupportedOperationException("Target is not a computer");
 		}
 		return (IComputerAccess) this.target;
 	}
 
+	/**
+	 * Returns the target peripheral.
+	 * 
+	 * @return the target peripheral
+	 * @throws UnsupportedOperationException
+	 *             if the target isn't a peripheral.
+	 * @see #isPeripheralTarget()
+	 * @see #getTarget()
+	 */
 	public IPeripheral getTargetPeripheral() {
-		if (!isValid())
-			throw new IllegalStateException("Invalid entry");
 		if (!this.peripheral) {
 			throw new UnsupportedOperationException(
 					"Target is not a peripheral");
@@ -116,6 +148,7 @@ public class RoutingTableEntry {
 		return (IPeripheral) this.target;
 	}
 
+	@Override
 	public int hashCode() {
 		int prime = 31;
 		int result = 1;
@@ -124,14 +157,17 @@ public class RoutingTableEntry {
 		return result;
 	}
 
+	/**
+	 * Checks whetehr the traget is a peripheral or a computer
+	 * 
+	 * @return <code>true</code> if the target is a peripheral,
+	 *         <code>false</code> if it is a computer.
+	 */
 	public boolean isPeripheralTarget() {
 		return this.peripheral;
 	}
 
-	public boolean isValid() {
-		return this.target != null;
-	}
-
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if (this.peripheral) {
