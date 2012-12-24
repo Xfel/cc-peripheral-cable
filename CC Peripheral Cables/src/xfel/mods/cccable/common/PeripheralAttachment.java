@@ -103,14 +103,14 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = new HashSet<String>();
 		attached = true;
 
-		peripheral.attach(computer);
+		peripheral.attach(this);
 		computer.queueEvent("peripheral", new Object[] { virtualSide });
 	}
 
 	// does the detach op
 	void detach() {
 		// System.out.println("detach "+this);
-		peripheral.detach(computer);
+		peripheral.detach(this);
 
 		for (String loc : myMounts) {
 			computer.unmount(loc);
