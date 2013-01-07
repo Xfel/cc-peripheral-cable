@@ -18,7 +18,7 @@ public class CommonProxy {
 	/**
 	 * The texture resource location.
 	 */
-	public static final String BLOCK_TEXTURE = "/terrain/cccable.png";
+	public static final String BLOCK_TEXTURE = "/terrain/cccable-ext.png";
 
 	/**
 	 * Initializes side-specific data

@@ -25,7 +25,7 @@ public class ClientProxy extends CommonProxy {
 		
 		int cableRenderId = RenderingRegistry.getNextAvailableRenderId();
 		PeripheralCableMod.cableBlock.setRenderType(cableRenderId);
-		RenderingRegistry.registerBlockHandler(cableRenderId, new CableRenderer());
+		RenderingRegistry.registerBlockHandler(cableRenderId, new ExtendedCableRenderer());
 	}
 	
 }

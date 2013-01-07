@@ -24,6 +24,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
  * @author Xfel
  *
  */
+@Deprecated
 public class CableRenderer implements ISimpleBlockRenderingHandler {
 
 	private static void renderCable(RenderBlocks renderblocks,
