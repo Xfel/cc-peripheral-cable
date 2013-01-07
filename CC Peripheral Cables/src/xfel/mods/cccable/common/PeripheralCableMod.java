@@ -145,7 +145,9 @@ public class PeripheralCableMod {
 	@PostInit
 	public void postInit(FMLPostInitializationEvent evt) {
 		// set the creative tab...
-		cableBlock.setCreativeTab(ComputerCraftAPI.getCreativeTab());
+		if (ComputerCraftAPI.getCreativeTab() != null) {
+			cableBlock.setCreativeTab(ComputerCraftAPI.getCreativeTab());
+		}
 
 		// load reflection data
 		ComputerCraftReflector.initReflectionReferences();
