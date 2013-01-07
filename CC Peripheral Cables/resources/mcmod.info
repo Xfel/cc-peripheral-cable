@@ -3,7 +3,7 @@
   "modid": "CCCable",
   "name": "ComputerCraft Peripheral Cables",
   "description": "Extends ComputerCraft with cables to connect remote peripherals.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "credits": "Created by Xfel, is an addon for ComputerCraft",
   "logoFile": "",
   "mcversion": "1.4.6",
