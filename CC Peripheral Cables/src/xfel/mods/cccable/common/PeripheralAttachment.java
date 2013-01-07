@@ -103,8 +103,8 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = new HashSet<String>();
 		attached = true;
 
-		peripheral.attach(this);
 		computer.queueEvent("peripheral", new Object[] { virtualSide });
+		peripheral.attach(this);
 	}
 
 	// does the detach op
