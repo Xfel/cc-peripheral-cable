@@ -89,6 +89,8 @@ public class PeripheralCableMod {
 
 	private File minecraftDirectory;
 
+	private Configuration config;
+
 	/**
 	 * Retrieves the minecraft directory (as there seems to be no other way)
 	 * Also loads the block id from config.
@@ -98,15 +100,14 @@ public class PeripheralCableMod {
 	 */
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
-		System.out.println(sideHandler);
 		minecraftDirectory = evt.getModConfigurationDirectory().getParentFile();
 
-		Configuration config = new Configuration(
+		config = new Configuration(
 				evt.getSuggestedConfigurationFile());
 		config.load();
 
-		cableBlock = new BlockCable(config.getBlock("cable.id", 2030).getInt());
-		GameRegistry.registerBlock(cableBlock, "PeripheralCable");
+		// aquire the id (is reserved by the configuration class)
+		config.getBlock("cable.id", 2030);
 
 		config.save();
 	}
@@ -119,6 +120,9 @@ public class PeripheralCableMod {
 	 */
 	@Init
 	public void init(FMLInitializationEvent evt) {
+		// instanciate the block
+		cableBlock = new BlockCable(config.get(Configuration.CATEGORY_BLOCK, "cable.id", 2030).getInt());
+		GameRegistry.registerBlock(cableBlock, "PeripheralCable");
 
 		LanguageRegistry.addName(cableBlock, "Peripheral Cable");
 		CraftingManager.getInstance().func_92051_a(
