@@ -10,13 +10,11 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.util.concurrent.Service.State;
-
 import xfel.mods.cccable.common.blocks.TileCableCommon;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 /**
- * An extend renderer to make cables look nicer (wip)
+ * An extend renderer to make cables look nicer
  * 
  * @author Xfel
  * 
@@ -27,9 +25,12 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 	 * All directions orthogonal to the given directions
 	 */
 	public static final int[][] ORTHOGONAL_DIRECTIONS = { { 2, 4, 3, 5 },
-			{ 2, 4, 3, 5 }, { 1, 5, 0, 4 }, { 1, 4, 0, 5 }, { 1, 2, 0, 3 },
-			{ 1, 3, 0, 2 } };
+			{ 2, 4, 3, 5 }, { 1, 4, 0, 5 }, { 1, 4, 0, 5 }, { 1, 2, 0, 3 },
+			{ 1, 2, 0, 3 } };
 
+	/**
+	 * the flags for the orhogonal directions. cached for performance gain
+	 */
 	public static final int[][] OFLAGS = new int[6][4];
 	/**
 	 * The orthogonal direction masks
@@ -57,24 +58,13 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 	 */
 	public static int selectTexture(int connectionState, int side) {
 
-		// no connections?
-		if (connectionState == 0) {
-			return 0;
-		}
-
 		connectionState &= OMASKS[side];
 
-		if (connectionState == OMASKS[side]) {// all directions
-			return 0;
+		if (connectionState == 0 || connectionState == OMASKS[side]) {
+			return 0;// all directions or no connection
 		}
 
 		int[] orths = OFLAGS[side];
-		// boolean[] has = new boolean[4];
-		//
-		// for (int i = 0; i < 4; i++) {
-		// has[i] = (connectionState & ForgeDirection.VALID_DIRECTIONS[i].flag)
-		// != 0;
-		// }
 
 		for (int i = 0; i < 2; i++) {
 			if (connectionState == (orths[i] | orths[i + 2])
@@ -96,9 +86,6 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 			}
 		}
 
-		// can this even happen?
-		System.out.println("Fallthrough: "
-				+ Integer.toBinaryString(connectionState));
 		return 0;
 	}
 
@@ -190,8 +177,10 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 				maxSize);
 
 		tess.setColorOpaque_F(colorNSR, colorNSG, colorNSB);
+		renderblocks.flipTexture=true;// flip the texture to avoid render bug
 		renderblocks.renderEastFace(block, (double) x, (double) y, (double) z,
 				selectTexture(connectionState, 2));
+		renderblocks.flipTexture=false;
 
 		renderblocks.renderWestFace(block, (double) x, (double) y, (double) z,
 				selectTexture(connectionState, 3));
@@ -204,11 +193,14 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 		renderblocks.renderNorthFace(block, (double) x, (double) y, (double) z,
 				selectTexture(connectionState, 4));
 
+		renderblocks.flipTexture=true;// flip the texture to avoid render bug
 		renderblocks.renderSouthFace(block, (double) x, (double) y, (double) z,
 				selectTexture(connectionState, 5));
-
+		renderblocks.flipTexture=false;
+		
+		// render color tag if there is one
 		if (colorTag != -1) {
-			final float colorOffset = 0.001f;
+			final float colorOffset = 0.001f;// the color field is rendered a little bit above the cable surface.
 
 			renderblocks.setCustomBlockBounds(minSize - colorOffset, minSize
 					- colorOffset, minSize - colorOffset,
@@ -228,7 +220,6 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID,
 			RenderBlocks renderer) {
-		// GL11.glBindTexture(GL11.GL_TEXTURE_2D, 10);
 		Tessellator tessellator = Tessellator.instance;
 
 		int textureID = 0;
