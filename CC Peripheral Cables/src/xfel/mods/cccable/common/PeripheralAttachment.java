@@ -46,8 +46,6 @@ public class PeripheralAttachment implements IComputerAccess {
 		this.peripheral = peripheral;
 		this.colorTag = colorTag;
 		this.computer = computer;
-		this.virtualSide = getVirtualSide(computer.getAttachmentSide(),
-				colorTag);
 	}
 
 	@Override
@@ -74,19 +72,9 @@ public class PeripheralAttachment implements IComputerAccess {
 			return false;
 		}
 		PeripheralAttachment other = (PeripheralAttachment) obj;
-		if (colorTag != other.colorTag) {
-			if (computer != other.computer) {
-				return false;
-			}
-		}
-		if (peripheral == null) {
-			if (other.peripheral != null) {
-				return false;
-			}
-		} else if (!peripheral.equals(other.peripheral)) {
-			return false;
-		}
-		return true;
+
+		return (colorTag == other.colorTag) && (computer == other.computer)
+				&& peripheral.equals(other.peripheral);
 	}
 
 	// does the attach op
@@ -103,7 +91,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = new HashSet<String>();
 		attached = true;
 
-		computer.queueEvent("peripheral", new Object[] { virtualSide });
+		computer.queueEvent("peripheral", new Object[] { getAttachmentSide() });
 		peripheral.attach(this);
 	}
 
@@ -119,7 +107,8 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = null;
 		attached = false;
 
-		computer.queueEvent("peripheral_detach", new Object[] { virtualSide });
+		computer.queueEvent("peripheral_detach",
+				new Object[] { getAttachmentSide() });
 	}
 
 	@Override
@@ -333,6 +322,9 @@ public class PeripheralAttachment implements IComputerAccess {
 
 	@Override
 	public String getAttachmentSide() {
+		if (virtualSide == null) {
+			virtualSide = getVirtualSide(computer.getAttachmentSide(), colorTag);
+		}
 		return virtualSide;
 	}
 }
