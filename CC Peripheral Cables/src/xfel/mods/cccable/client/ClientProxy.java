@@ -6,6 +6,8 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.cccable.client;
 
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.Icon;
 import net.minecraftforge.client.MinecraftForgeClient;
 import xfel.mods.cccable.common.CommonProxy;
 import xfel.mods.cccable.common.PeripheralCableMod;
@@ -21,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	protected void initSide() {
-		MinecraftForgeClient.preloadTexture(BLOCK_TEXTURE);
+//		MinecraftForgeClient.preloadTexture(BLOCK_TEXTURE);
 		
 		int cableRenderId = RenderingRegistry.getNextAvailableRenderId();
 		PeripheralCableMod.cableBlock.setRenderType(cableRenderId);

@@ -125,7 +125,7 @@ public class PeripheralCableMod {
 		GameRegistry.registerBlock(cableBlock, "PeripheralCable");
 
 		LanguageRegistry.addName(cableBlock, "Peripheral Cable");
-		CraftingManager.getInstance().func_92051_a(
+		GameRegistry.addShapedRecipe(
 				new ItemStack(cableBlock, 6), "SRS", "RIR", "SRS", 'R',
 				Item.redstone, 'S', Block.stone, 'I', Item.ingotIron);
 

@@ -4,12 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import xfel.mods.cccable.common.PeripheralCableMod;
+import xfel.mods.cccable.common.blocks.BlockCable;
 import xfel.mods.cccable.common.blocks.TileCableCommon;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
@@ -54,14 +58,19 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 	 *            the block's connection state
 	 * @param side
 	 *            the block side to render
+	 * @param outRotate
+	 *            will contain the uv rotation value
 	 * @return the texture index
 	 */
-	public static int selectTexture(int connectionState, int side) {
+	public static Icon selectTexture(int connectionState, int side,
+			int[] outRotate
+			) {
 
 		connectionState &= OMASKS[side];
 
 		if (connectionState == 0 || connectionState == OMASKS[side]) {
-			return 0;// all directions or no connection
+			outRotate[0] = 0;
+			return cableBase;// all directions or no connection
 		}
 
 		int[] orths = OFLAGS[side];
@@ -70,23 +79,32 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 			if (connectionState == (orths[i] | orths[i + 2])
 					|| connectionState == orths[i]
 					|| connectionState == orths[i + 2]) {
-				return 16 + i;// straight
+				// straight
+				outRotate[0] = i;
+				return new IconRotated(cableStraight, i);
+//				return 16 + i;
 			}
 		}
 
 		for (int i = 0; i < 4; i++) {
 			if (connectionState == (orths[i] | orths[(i + 1) % 4])) {
-				return 32 + i; // corner
+				// corner
+				outRotate[0] = i;
+				return new IconRotated(cableCorner, i);
+//				return 32 + i;
 			}
 		}
 
 		for (int i = 0; i < 4; i++) {
 			if (connectionState == (orths[i] | orths[(i + 1) % 4] | orths[(i + 2) % 4])) {
-				return 48 + i; // T
+				// T
+				outRotate[0] = i;
+				return new IconRotated(cableT, i);
+//				return 48 + i;
 			}
 		}
 
-		return 0;
+		return cableBase;
 	}
 
 	/**
@@ -156,65 +174,73 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 		float colorOWR = colorOWFactor * colorR;
 		float colorOWG = colorOWFactor * colorG;
 		float colorOWB = colorOWFactor * colorB;
+		
+		int[] uvRotatePointer=new int[1];
 
 		int brightness = block.getMixedBrightnessForBlock(world, x, y, z);
 		tess.setBrightness(brightness);
 
 		// render Y +- faces
-		renderblocks.setCustomBlockBounds(xmin, minSize, zmin, xmax, maxSize,
-				zmax);
+		renderblocks.setRenderBounds(xmin, minSize, zmin, xmax, maxSize, zmax);
 
 		tess.setColorOpaque_F(colorBottomR, colorBottomG, colorBottomB);
 		renderblocks.renderBottomFace(block, (double) x, (double) y,
-				(double) z, selectTexture(connectionState, 0));
+				(double) z, selectTexture(connectionState, 0, uvRotatePointer));
 
 		tess.setColorOpaque_F(colorTopR, colorTopG, colorTopB);
 		renderblocks.renderTopFace(block, (double) x, (double) y, (double) z,
-				selectTexture(connectionState, 1));
+				selectTexture(connectionState, 1, uvRotatePointer));
 
 		// render Z +- faces
-		renderblocks.setCustomBlockBounds(xmin, ymin, minSize, xmax, ymax,
-				maxSize);
+		renderblocks.setRenderBounds(xmin, ymin, minSize, xmax, ymax, maxSize);
 
 		tess.setColorOpaque_F(colorNSR, colorNSG, colorNSB);
-		renderblocks.flipTexture=true;// flip the texture to avoid render bug
+		renderblocks.flipTexture = true;// flip the texture to avoid render bug
 		renderblocks.renderEastFace(block, (double) x, (double) y, (double) z,
-				selectTexture(connectionState, 2));
-		renderblocks.flipTexture=false;
+				selectTexture(connectionState, 2, uvRotatePointer));
+		renderblocks.flipTexture = false;
 
 		renderblocks.renderWestFace(block, (double) x, (double) y, (double) z,
-				selectTexture(connectionState, 3));
+				selectTexture(connectionState, 3, uvRotatePointer));
 
 		// render X +- faces
-		renderblocks.setCustomBlockBounds(minSize, ymin, zmin, maxSize, ymax,
-				zmax);
+		renderblocks.setRenderBounds(minSize, ymin, zmin, maxSize, ymax, zmax);
 
 		tess.setColorOpaque_F(colorOWR, colorOWG, colorOWB);
-		renderblocks.renderNorthFace(block, (double) x, (double) y, (double) z,
-				selectTexture(connectionState, 4));
 
-		renderblocks.flipTexture=true;// flip the texture to avoid render bug
+		renderblocks.renderNorthFace(block, (double) x, (double) y, (double) z,
+				selectTexture(connectionState, 4, uvRotatePointer));
+
+		renderblocks.flipTexture = true;// flip the texture to avoid render bug
 		renderblocks.renderSouthFace(block, (double) x, (double) y, (double) z,
-				selectTexture(connectionState, 5));
-		renderblocks.flipTexture=false;
-		
+				selectTexture(connectionState, 5, uvRotatePointer));
+		renderblocks.flipTexture = false;
+
 		// render color tag if there is one
 		if (colorTag != -1) {
-			final float colorOffset = 0.001f;// the color field is rendered a little bit above the cable surface.
+			final float colorOffset = 0.001f;// the color field is rendered a
+												// little bit above the cable
+												// surface.
 
-			renderblocks.setCustomBlockBounds(minSize - colorOffset, minSize
+			renderblocks.setRenderBounds(minSize - colorOffset, minSize
 					- colorOffset, minSize - colorOffset,
 					maxSize + colorOffset, maxSize + colorOffset, maxSize
 							+ colorOffset);
-			renderblocks.overrideBlockTexture = 64 + colorTag;
+			// renderblocks.overrideBlockTexture = 64 + colorTag;
+			renderblocks.setOverrideBlockTexture(getColorIcon(colorTag));
 
 			renderblocks.renderStandardBlockWithColorMultiplier(block, x, y, z,
 					colorR, colorG, colorB);
 
-			renderblocks.overrideBlockTexture = -1;
+			renderblocks.clearOverrideBlockTexture();
 		}
-		renderblocks.resetCustomBlockBounds();
+		renderblocks.unlockBlockBounds();
 
+	}
+
+	private static Icon getColorIcon(int colorTag) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -222,9 +248,9 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 			RenderBlocks renderer) {
 		Tessellator tessellator = Tessellator.instance;
 
-		int textureID = 0;
+		Icon textureID = cableBase;
 
-		renderer.setCustomBlockBounds(0.25f, 0.0F, 0.25f, 0.75f, 1.0F, 0.75f);
+		renderer.setRenderBounds(0.25f, 0.0F, 0.25f, 0.75f, 1.0F, 0.75f);
 
 		GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
 		tessellator.startDrawingQuads();
@@ -252,7 +278,7 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 		renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, textureID);
 		tessellator.draw();
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-		renderer.resetCustomBlockBounds();
+		renderer.unlockBlockBounds();
 	}
 
 	@Override
@@ -276,5 +302,17 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 	@Override
 	public int getRenderId() {
 		return 0;
+	}
+
+	private static Icon cableBase, cableStraight, cableCorner, cableT;
+
+	public static void loadTextures(IconRegister iconRegister) {
+		PeripheralCableMod.MOD_LOGGER.info("Loading textures...");
+		cableBase = iconRegister.func_94245_a("cccable:cable-base");
+		cableStraight = iconRegister.func_94245_a("cccable:cable-straight");
+		cableCorner = iconRegister.func_94245_a("cccable:cable-corner");
+		cableT = iconRegister.func_94245_a("cccable:cable-t");
+		System.out.println(cableBase);
+		// cableBase=iconRegister.func_94245_a("cccable:cable-base");
 	}
 }

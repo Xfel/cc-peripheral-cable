@@ -11,8 +11,12 @@ import ic2.api.IPaintableBlock;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,29 +24,35 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.ForgeDirection;
+import xfel.mods.cccable.client.ExtendedCableRenderer;
 import xfel.mods.cccable.common.CommonProxy;
+import xfel.mods.cccable.common.PeripheralCableMod;
 
 /**
  * The cable block class
  * 
  * @author Xfel
- *
+ * 
  */
-public class BlockCable extends BlockContainer implements IPaintableBlock{
+public class BlockCable extends BlockContainer implements IPaintableBlock {
 
 	private int renderType = -1;
 
 	/**
 	 * Default constructor
-	 * @param id the block id
+	 * 
+	 * @param id
+	 *            the block id
 	 */
 	public BlockCable(int id) {
 		super(id, Material.glass);
-		setBlockName("cable.peripheral");
-		setTextureFile(CommonProxy.BLOCK_TEXTURE);
+		setUnlocalizedName("cable.peripheral");
+		// setTextureFile(CommonProxy.BLOCK_TEXTURE);
 		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 
@@ -60,8 +70,11 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 	}
 
 	/**
-	 * Set the type of render function that is called for this block. This is called by the client proxy.
-	 * @param renderType the render type id
+	 * Set the type of render function that is called for this block. This is
+	 * called by the client proxy.
+	 * 
+	 * @param renderType
+	 *            the render type id
 	 */
 	public void setRenderType(int renderType) {
 		this.renderType = renderType;
@@ -76,8 +89,6 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
-	
-	
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z,
@@ -107,7 +118,8 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 			float offsetZ) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te instanceof TileCableCommon&&player.getCurrentEquippedItem()!=null) {
+		if (te instanceof TileCableCommon
+				&& player.getCurrentEquippedItem() != null) {
 			TileCableCommon tpc = (TileCableCommon) te;
 
 			ItemStack iih = player.getCurrentEquippedItem();
@@ -131,24 +143,13 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 		return false;
 	}
 
-	public int getBlockTexture(IBlockAccess iba, int x, int y, int z, int side) {
-		TileEntity te = iba.getBlockTileEntity(x, y, z);
-
-		if (te instanceof TileCableCommon) {
-			TileCableCommon tpc = (TileCableCommon) te;
-
-			return tpc.getColorTag() + 1;
-		}
-		return 0;
-	}
-
 	@Override
 	public boolean colorBlock(World world, int x, int y, int z, int color) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
 		if (te instanceof TileCableCommon) {
 			TileCableCommon tpc = (TileCableCommon) te;
-			
+
 			tpc.setColorTag(color);
 			return true;
 		}
@@ -156,7 +157,7 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 	}
 
 	@Override
-	public void addCollidingBlockToList(World world, int x, int y, int z,
+	public void addCollisionBoxesToList(World world, int x, int y, int z,
 			AxisAlignedBB bounds, List results, Entity entity) {
 		setBlockBounds(0.25f, 0.25f, 0.25f, 0.75f, 0.75f, 0.75f);
 		AxisAlignedBB center = super.getCollisionBoundingBoxFromPool(world, x,
@@ -279,6 +280,14 @@ public class BlockCable extends BlockContainer implements IPaintableBlock{
 	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int i,
 			int j, int k) {
 		return getCollisionBoundingBoxFromPool(world, i, j, k);
+	}
+
+	// texture stuff
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void func_94332_a(IconRegister icons) {
+		ExtendedCableRenderer.loadTextures(icons);
 	}
 
 	// @Override

@@ -7,6 +7,8 @@
  */
 package xfel.mods.cccable.common;
 
+import net.minecraft.client.renderer.texture.IconRegister;
+
 /**
  * Side-Specific proxy base class
  * 
@@ -15,10 +17,10 @@ package xfel.mods.cccable.common;
  */
 public class CommonProxy {
 
-	/**
-	 * The texture resource location.
-	 */
-	public static final String BLOCK_TEXTURE = "/terrain/cccable-ext.png";
+//	/**
+//	 * The texture resource location.
+//	 */
+//	public static final String BLOCK_TEXTURE = "/terrain/cccable-ext.png";
 
 	/**
 	 * Initializes side-specific data
