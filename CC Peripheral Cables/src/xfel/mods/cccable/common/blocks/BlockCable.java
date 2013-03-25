@@ -286,7 +286,7 @@ public class BlockCable extends BlockContainer implements IPaintableBlock {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void func_94332_a(IconRegister icons) {
+	public void registerIcons(IconRegister icons) {
 		ExtendedCableRenderer.loadTextures(icons);
 	}
 

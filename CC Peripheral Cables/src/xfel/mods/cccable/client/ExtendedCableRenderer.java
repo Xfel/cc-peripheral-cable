@@ -308,10 +308,10 @@ public class ExtendedCableRenderer implements ISimpleBlockRenderingHandler {
 
 	public static void loadTextures(IconRegister iconRegister) {
 		PeripheralCableMod.MOD_LOGGER.info("Loading textures...");
-		cableBase = iconRegister.func_94245_a("cccable:cable-base");
-		cableStraight = iconRegister.func_94245_a("cccable:cable-straight");
-		cableCorner = iconRegister.func_94245_a("cccable:cable-corner");
-		cableT = iconRegister.func_94245_a("cccable:cable-t");
+		cableBase = iconRegister.registerIcon("cccable:cable-base");
+		cableStraight = iconRegister.registerIcon("cccable:cable-straight");
+		cableCorner = iconRegister.registerIcon("cccable:cable-corner");
+		cableT = iconRegister.registerIcon("cccable:cable-t");
 		System.out.println(cableBase);
 		// cableBase=iconRegister.func_94245_a("cccable:cable-base");
 	}

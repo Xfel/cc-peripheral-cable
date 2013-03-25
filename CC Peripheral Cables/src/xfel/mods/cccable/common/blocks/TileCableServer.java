@@ -437,7 +437,7 @@ public class TileCableServer extends TileCableCommon implements
 			Object[] arguments) throws Exception {
 
 		if (method == 4) {// list
-			return listPeripherals(computer.getAttachmentSide());
+			return listPeripherals(computer.getAttachmentName());
 		}
 
 		if (arguments.length < 1 || !(arguments[0] instanceof String)) {

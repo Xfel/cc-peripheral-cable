@@ -91,7 +91,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		myMounts = new HashSet<String>();
 		attached = true;
 
-		computer.queueEvent("peripheral", new Object[] { getAttachmentSide() });
+		computer.queueEvent("peripheral", new Object[] { getAttachmentName() });
 		peripheral.attach(this);
 	}
 
@@ -108,7 +108,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		attached = false;
 
 		computer.queueEvent("peripheral_detach",
-				new Object[] { getAttachmentSide() });
+				new Object[] { getAttachmentName() });
 	}
 
 	@Override
@@ -160,14 +160,6 @@ public class PeripheralAttachment implements IComputerAccess {
 			throw new RuntimeException("You are not attached to this Computer");
 		}
 		return computer.getID();
-	}
-
-	@Override
-	public void queueEvent(String event) {
-		if (!attached) {
-			throw new RuntimeException("You are not attached to this Computer");
-		}
-		computer.queueEvent(event);
 	}
 
 	@Override
@@ -313,7 +305,7 @@ public class PeripheralAttachment implements IComputerAccess {
 		builder.append(", computer=");
 		builder.append(computer.getID());
 		builder.append(", cside=");
-		builder.append(computer.getAttachmentSide());
+		builder.append(computer.getAttachmentName());
 		builder.append(", methods=");
 		builder.append(Arrays.toString(methods));
 		builder.append("]");
@@ -321,9 +313,9 @@ public class PeripheralAttachment implements IComputerAccess {
 	}
 
 	@Override
-	public String getAttachmentSide() {
+	public String getAttachmentName() {
 		if (virtualSide == null) {
-			virtualSide = getVirtualSide(computer.getAttachmentSide(), colorTag);
+			virtualSide = getVirtualSide(computer.getAttachmentName(), colorTag);
 		}
 		return virtualSide;
 	}
